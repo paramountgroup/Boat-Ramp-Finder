@@ -1,4 +1,5 @@
 // JavaScript Document
+/*  Source Google Maps API Tutorial  */
 
 function initialize() {
         var mapCanvas = document.getElementById('map');
