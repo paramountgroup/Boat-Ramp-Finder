@@ -203,7 +203,7 @@ function initMap() {
     center: countries['us'].center,
     mapTypeControl: false,
     panControl: false,
-    zoomControl: false,
+    zoomControl: true,
     streetViewControl: false
   });
 
@@ -230,24 +230,38 @@ function initMap() {
 
 // When the user selects a city, get the place details for the city and
 // zoom the map in on the city.
+
 function onPlaceChanged() {
   var place = autocomplete.getPlace();
   if (place.geometry) {
     map.panTo(place.geometry.location);
-    map.setZoom(15);
+    map.setZoom(10);
     search();
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
+  
+var layer = new google.maps.FusionTablesLayer({
+    query: {
+      select: '\'Geocodable address\'',
+	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC'
+//	  from: 'AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk'
+//      from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'
+    }
+  });
+  layer.setMap(map);
 }
 
 // Search for hotels in the selected city, within the viewport of the map.
 function search() {
   var search = {
     bounds: map.getBounds(),
-    types: ['lodging']
+    keyword: 'boat ramp',
+	radius: 3000
+  
   };
-
+ 
+  
   places.nearbySearch(search, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       clearResults();
@@ -261,7 +275,7 @@ function search() {
         markers[i] = new google.maps.Marker({
           position: results[i].geometry.location,
           animation: google.maps.Animation.DROP,
-          icon: markerIcon
+          icon: markerIcon,
         });
         // If the user clicks a hotel marker, show the details of that hotel
         // in an info window.
@@ -338,8 +352,8 @@ function clearResults() {
   }
 }
 
-// Get the place details for a hotel. Show the information in an info window,
-// anchored on the marker for the hotel that the user selected.
+// Get the place details for a boat ramp. Show the information in an info window,
+// anchored on the marker for the boat ramp that the user selected.
 function showInfoWindow() {
   var marker = this;
   places.getDetails({placeId: marker.placeResult.place_id},
@@ -368,8 +382,8 @@ function buildIWContent(place) {
     document.getElementById('iw-phone-row').style.display = 'none';
   }
 
-  // Assign a five-star rating to the hotel, using a black star ('&#10029;')
-  // to indicate the rating the hotel has earned, and a white star ('&#10025;')
+  // Assign a five-star rating to the boat ramp, using a black star ('&#10029;')
+  // to indicate the rating the boat ramp has earned, and a white star ('&#10025;')
   // for the rating points not achieved.
   if (place.rating) {
     var ratingHtml = '';
