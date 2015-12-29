@@ -1,17 +1,14 @@
-// Source Google Developers API
+// This code was based on the Source Google Map Developers API Samples customized to fit 
+// the needs of the Udacity Front End Developers Course Project 5.
 
 
-// Data Model
 
-// Data for the markers consisting of a name, a LatLng and a zIndex for the
-// order in which these markers should display on top of each other.
-var beaches = [
-  ['Bondi Beach', 28.180542, -80.604856, 4],
-  ['Coogee Beach', 28.193036, -80.609052, 5],
-  ['Cronulla Beach', 28.208249, -80.597507, 3],
-  ['Manly Beach', 28.194545, -80.612187, 2],
-  ['Maroubra Beach', 28.200198, -80.599302, 1]
-];
+/*******     Data Model     ********
+
+All data for this project is being stored in Google Maps and Accessed via the API. 
+The second source of data is coming from Google Fusion Tables and also accessed via the API. 
+
+*/
 
 // View Model
 
@@ -131,9 +128,9 @@ function clearMarkers() {
 */
 
 // This example uses the autocomplete feature of the Google Places API.
-// It allows the user to find all hotels in a given place, within a given
-// country. It then displays markers for all the hotels returned,
-// with on-click details for each hotel.
+// It allows the user to find all boat ramps in a given place, within a given
+// country. It then displays markers for all the boat ramps returned,
+// with on-click details for each boat ramp.
 
 var map, places, infoWindow;
 var markers = [];
@@ -197,6 +194,12 @@ var countries = {
   }
 };
 
+ //Error handling if Google Maps fails to load reference student code sheryllun-neighborhood map
+  var mapRequestTimeout = setTimeout(function() {
+    $('#map').html(' Trouble loading Google Maps. Please refresh your browser and try again.');
+  }, 8000);
+
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: countries['us'].zoom,
@@ -207,12 +210,16 @@ function initMap() {
     streetViewControl: false
   });
 
+
+  clearTimeout(mapRequestTimeout);
+
   infoWindow = new google.maps.InfoWindow({
     content: document.getElementById('info-content')
   });
 
   // Create the autocomplete object and associate it with the UI input control.
   // Restrict the search to the default country, and to place type "cities".
+  
   autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */ (
           document.getElementById('autocomplete')), {
@@ -226,7 +233,13 @@ function initMap() {
   // Add a DOM event listener to react when the user selects a country.
   document.getElementById('country').addEventListener(
       'change', setAutocompleteCountry);
-}
+	  
+	  
+/*  //Error handling if Google Maps fails to load
+  mapRequestTimeout = setTimeout(function() {
+    $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
+  }, 8000); */
+}     //.error(function(e){$ ('map could not be loaded');}); error handling code that does not work
 
 // When the user selects a city, get the place details for the city and
 // zoom the map in on the city.
@@ -240,19 +253,20 @@ function onPlaceChanged() {
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
+
+// If city matches were there are locations stored in the fusion table they are placed on the map as blue pins.
+// Design, color, layout for these pins and infowindows are handled by the fusion table. 
   
 var layer = new google.maps.FusionTablesLayer({
     query: {
       select: '\'Geocodable address\'',
-	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC'
-//	  from: 'AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk'
-//      from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'
+	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
     }
   });
   layer.setMap(map);
 }
 
-// Search for hotels in the selected city, within the viewport of the map.
+// Search for boat ramps in the selected city, within the viewport of the map.
 function search() {
   var search = {
     bounds: map.getBounds(),
@@ -277,7 +291,7 @@ function search() {
           animation: google.maps.Animation.DROP,
           icon: markerIcon,
         });
-        // If the user clicks a hotel marker, show the details of that hotel
+        // If the user clicks a boat ramp marker, show the details of that ramp
         // in an info window.
         markers[i].placeResult = results[i];
         google.maps.event.addListener(markers[i], 'click', showInfoWindow);
