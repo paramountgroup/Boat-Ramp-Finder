@@ -519,6 +519,15 @@ table {
   color: white;
 }
 
+#definepins {
+	text-align: left;
+	font-size: 15px;
+	color: white;
+	padding: 2px;
+	font-weight: bold;
+	width: 50%;
+}
+
 #autocomplete {
   width: 79%;
   height: 25px;
