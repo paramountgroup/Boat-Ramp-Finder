@@ -15,11 +15,8 @@
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
     
      <!-- Load Google Maps API -->
-    <!--
-    <script async defer
-        src="https://maps.googlapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&callback=initMap"></script>
--->
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"
+  
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"
         async defer></script>
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -88,7 +85,7 @@
                       <div id="findboatramps">Find Boat Ramps in your City:</div>
                       <div id="cityandcountry" align="left">
                           <table id="locationField">
-                            <input id="autocomplete" placeholder="Enter a city" type="text"/>
+                            <input data-bind="value: searchLocation, selectOnFocus: true" id='autocomplete'" placeholder="Enter a city" type="text"/>
                           </table>
         
                           <table id="controls">

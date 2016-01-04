@@ -127,7 +127,7 @@ function clearMarkers() {
 
 */
 
-// This example uses the autocomplete feature of the Google Places API.
+// This code was taken from the google maps developer help page and uses the autocomplete feature of the Google Places API.
 // It allows the user to find all boat ramps in a given place, within a given
 // country. It then displays markers for all the boat ramps returned,
 // with on-click details for each boat ramp.
@@ -201,15 +201,39 @@ var countries = {
 
 
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: countries['us'].zoom,
-    center: countries['us'].center,
+	var myLatLng = {lat: 28.182882, lng: -80.592502};
+	map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: myLatLng,
     mapTypeControl: false,
     panControl: false,
     zoomControl: true,
     streetViewControl: false
-  });
+	
+	});
+	var image = 'img/PG-in-white-circle.png';
+	var marker = new google.maps.Marker({
+	  position: myLatLng,
+	  map: map,
+	  icon: image,
+	  title: 'The Paramount Group world headquarters',
+	  animation: google.maps.Animation.BOUNCE,
+	});
+	
+	marker.addListener('click', toggleBounce);
+//	setMarkers(map);  // sets markers that are hard coded in the app as a project requirement
+  
+// The following function makes the marker for the headquareters location bounce using a DROP
+// animation. Clicking on the marker will toggle the animation between a BOUNCE
+// animation and no animation.
 
+	function toggleBounce() {
+	  if (marker.getAnimation() !== null) {
+		marker.setAnimation(null);
+	  } else {
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+	  }
+	}
 
   clearTimeout(mapRequestTimeout);
 
@@ -234,12 +258,10 @@ function initMap() {
   document.getElementById('country').addEventListener(
       'change', setAutocompleteCountry);
 	  
-	  
-/*  //Error handling if Google Maps fails to load
-  mapRequestTimeout = setTimeout(function() {
-    $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
-  }, 8000); */
-}     //.error(function(e){$ ('map could not be loaded');}); error handling code that does not work
+}   // end the initMap function  
+
+
+//.error(function(e){$ ('map could not be loaded');}); //error handling code that does not work
 
 // When the user selects a city, get the place details for the city and
 // zoom the map in on the city.
@@ -429,3 +451,5 @@ function buildIWContent(place) {
     document.getElementById('iw-website-row').style.display = 'none';
   }
 }
+
+//ko.applyBindings(myViewModel);
