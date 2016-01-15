@@ -127,7 +127,7 @@ function clearMarkers() {
 
 */
 
-// This code was taken from the google maps developer help page and uses the autocomplete feature of the Google Places API.
+// The basis of this code is found on the google maps developer help page (sample example code) and uses the autocomplete feature of the Google Places API.
 // It allows the user to find all boat ramps in a given place, within a given
 // country. It then displays markers for all the boat ramps returned,
 // with on-click details for each boat ramp.
@@ -194,14 +194,15 @@ var countries = {
   }
 };
 
- //Error handling if Google Maps fails to load reference student code sheryllun-neighborhood map
+ //Error handling if Google Maps fails to load within 8 seconds error message displayed. reference student code sheryllun-neighborhood map
+ 
   var mapRequestTimeout = setTimeout(function() {
-    $('#map').html(' Trouble loading Google Maps. Please refresh your browser and try again.');
+    $('#map').html(' Oh My, Trouble loading Google Maps! Please refresh your browser and try again.');
   }, 8000);
 
 
 function initMap() {
-	var myLatLng = {lat: 28.182882, lng: -80.592502};
+	var myLatLng = {lat: 28.182882, lng: -80.592502}; // this is my office location
 	map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: myLatLng,
@@ -211,16 +212,16 @@ function initMap() {
     streetViewControl: false
 	
 	});
-	var image = 'img/PG-in-white-circle.png';
+	var image = 'img/PG-in-white-circle.png'; // company logo
 	var marker = new google.maps.Marker({
 	  position: myLatLng,
 	  map: map,
 	  icon: image,
-	  title: 'The Paramount Group world headquarters',
+	  title: 'The Paramount Group world headquarters',  // shameless plug
 	  animation: google.maps.Animation.BOUNCE,
 	});
 	
-	marker.addListener('click', toggleBounce);
+	marker.addListener('click', toggleBounce); // toggle on or off the bouncing logo
 //	setMarkers(map);  // sets markers that are hard coded in the app as a project requirement
   
 // The following function makes the marker for the headquareters location bounce using a DROP
@@ -235,7 +236,7 @@ function initMap() {
 	  }
 	}
 
-  clearTimeout(mapRequestTimeout);
+  clearTimeout(mapRequestTimeout); // map loaded ok and no need for error message
 
   infoWindow = new google.maps.InfoWindow({
     content: document.getElementById('info-content')
@@ -257,21 +258,25 @@ function initMap() {
   // Add a DOM event listener to react when the user selects a country.
   document.getElementById('country').addEventListener(
       'change', setAutocompleteCountry);
-	  
-}   // end the initMap function  
+//  loadFourSquareData(places, map);  // Load markers using the Foursquare search
+}
+
+/***********************   END INITMAP    ********************************/
 
 
-//.error(function(e){$ ('map could not be loaded');}); //error handling code that does not work
 
 // When the user selects a city, get the place details for the city and
 // zoom the map in on the city.
 
 function onPlaceChanged() {
   var place = autocomplete.getPlace();
+  console.log('what is this place you speak of ' + place);
   if (place.geometry) {
     map.panTo(place.geometry.location);
+	console.log('is this the lat long or city name? ' + place.geometry.location);
     map.setZoom(10);
     search();
+	loadFourSquareData(place.geometry.location, map);  // Load markers using the Foursquare API
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
@@ -279,13 +284,14 @@ function onPlaceChanged() {
 // If city matches were there are locations stored in the fusion table they are placed on the map as blue pins.
 // Design, color, layout for these pins and infowindows are handled by the fusion table. 
   
-var layer = new google.maps.FusionTablesLayer({
-    query: {
-      select: '\'Geocodable address\'',
-	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
-    }
+  var layer = new google.maps.FusionTablesLayer({
+	  query: {
+		select: '\'Geocodable address\'',
+		from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
+	  }
   });
-  layer.setMap(map);
+  
+  layer.setMap(map); // load the fusion table pins
 }
 
 // Search for boat ramps in the selected city, within the viewport of the map.
@@ -302,8 +308,10 @@ function search() {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       clearResults();
       clearMarkers();
-      // Create a marker for each hotel found, and
+	  
+      // Create a marker for each boat ramp found, and
       // assign a letter of the alphabetic to each marker icon.
+	  
       for (var i = 0; i < results.length; i++) {
         var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i);
         var markerIcon = MARKER_PATH + markerLetter + '.png';
@@ -315,13 +323,14 @@ function search() {
         });
         // If the user clicks a boat ramp marker, show the details of that ramp
         // in an info window.
+		
         markers[i].placeResult = results[i];
         google.maps.event.addListener(markers[i], 'click', showInfoWindow);
         setTimeout(dropMarker(i), i * 100);
-        addResult(results[i], i);
+        addResult(results[i], i); // call function to create list
       }
     }
-  });
+  })
 }
 
 function clearMarkers() {
@@ -356,7 +365,13 @@ function dropMarker(i) {
   };
 }
 
+// create the list of boat ramps
+
 function addResult(result, i) {
+	
+	
+console.log('show me what is being passed into addResult ' + result);
+
   var results = document.getElementById('results');
   var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i);
   var markerIcon = MARKER_PATH + markerLetter + '.png';
@@ -381,6 +396,33 @@ function addResult(result, i) {
   results.appendChild(tr);
 }
 
+/*
+var CoffeeShopViewModel = function() {
+            var self = this;
+
+            self.locations = ko.observableArray();
+            self.searchInput = ko.observable('');
+
+            // Knockout utility function enabling user to filter search
+            self.filteredLocations = ko.computed(function() {
+                return ko.utils.arrayFilter(self.locations(), function(location) {
+                    if ( location.title.toLowerCase().match( self.searchInput().toLowerCase() ) ) {
+                        return location;
+                    }
+                });
+            });
+
+}
+
+*/
+
+
+
+
+
+
+
+
 function clearResults() {
   var results = document.getElementById('results');
   while (results.childNodes[0]) {
@@ -390,6 +432,7 @@ function clearResults() {
 
 // Get the place details for a boat ramp. Show the information in an info window,
 // anchored on the marker for the boat ramp that the user selected.
+
 function showInfoWindow() {
   var marker = this;
   places.getDetails({placeId: marker.placeResult.place_id},
@@ -421,6 +464,7 @@ function buildIWContent(place) {
   // Assign a five-star rating to the boat ramp, using a black star ('&#10029;')
   // to indicate the rating the boat ramp has earned, and a white star ('&#10025;')
   // for the rating points not achieved.
+  
   if (place.rating) {
     var ratingHtml = '';
     for (var i = 0; i < 5; i++) {
@@ -438,6 +482,7 @@ function buildIWContent(place) {
 
   // The regexp isolates the first part of the URL (domain plus subdomain)
   // to give a short URL for displaying in the info window.
+  
   if (place.website) {
     var fullUrl = place.website;
     var website = hostnameRegexp.exec(place.website);
@@ -451,5 +496,114 @@ function buildIWContent(place) {
     document.getElementById('iw-website-row').style.display = 'none';
   }
 }
+
+
+/*******  This section is added to pull location data from FourSquare.   *****/
+/* Foursquare documentation - Search for Places in an Area - https://developer.foursquare.com/start/search
+
+-This what Foursquare says you need to do to user their API-
+"You’ll need your client ID and client secret to make a userless venue search or explore request ("venues" are what we call places on Foursquare). This is essentially the simplest way to interact with the Foursquare API—there’s no need to use OAuth. If you choose not to use a client library, you can directly make HTTP requests to the venues/search or venues/explore endpoints and get back a JSON response. "
+
+In the HTTP request, you need to pass in your client ID, client secret, a version parameter, and any other parameters that the endpoint requires:
+
+https://api.foursquare.com/v2/venues/search
+  ?client_id=CLIENT_ID
+  &client_secret=CLIENT_SECRET
+  &ll=40.7,-74
+  &query=sushi
+  &v=20140806      //v param is essentially a date in YYYYMMDD format that lets you tell us "I'm prepared for API changes up to this date." 
+  &m=foursquare    //An m parameter, which specifies whether you want Swarm- or Foursquare-style responses.
+  
+  */
+ 
+  
+function createInfoWindowContent(venue) {
+	// Foursquare requires credit for their API data, venue title is linked to Foursquare, see https://developer.foursquare.com/overview/attribution
+	var venueURL = 'http://foursquare.com/v/' + venue.id, 
+		infoWindowHTML = '<h6><a href="' + venueURL + '" target="_blank">' + venue.name  + '</a></h6>';
+		infoWindowHTML += '<h7 class="foursquareinfo">Address: <span>' + venue.location.address + ', ' + venue.location.city + ', ' + venue.location.state + '</span></h7>';
+		infoWindowHTML += '<h5><img src="img/foursquare-logo.png" alt="Foursquare logo"></h5>';
+	   
+	return infoWindowHTML;
+}
+
+function attachInfoWindow(foursquareMarker, foursquareContent) {
+	var infowindow = new google.maps.InfoWindow({
+		content: foursquareContent
+	});
+	
+	foursquareMarker.addListener('click', function() {
+		infowindow.open(foursquareMarker.get('map'), foursquareMarker);
+	});
+}
+
+
+
+// ********   Load the Foursquare Pins ********//
+
+ function loadFourSquareData(citylatlong, map) {
+	 	var citylatlongstring = String(citylatlong);    // convert to string
+	    var formattedcitylatlong = citylatlongstring.replace(/[()]/g,'');   // remove the parentheses 
+		var foursquareId = 'BNIBDGYS4MPPBEZX00TFNXH0GPWLESDLWHAEKVX3UVELUNY3';
+        var foursquaresecret = 'QRAJN1S0QBWSELVY3RMDRIITPGFVEKRPWSTFKQRLKG0QC2AG';
+        var foursquareVersion = '20140806';
+		var styleResponse = '&m=foursquare';
+        var apiEndpoint = 'https://api.foursquare.com/v2/venues/search?client_id=' + foursquareId + '&client_secret=' + foursquaresecret + '&ll=' + formattedcitylatlong + '&query=boatramp' +'&v=' + foursquareVersion + styleResponse;
+        
+		console.log(apiEndpoint);
+
+        $.getJSON(apiEndpoint, function(result, status) {
+			console.log('report status ' + status);
+            // var venue = json.response.groups[0].items[0].venue;
+            
+			console.log('what foursquare sent back', result);
+
+			if (status !== 'success') { 
+				return alert('JSON Request to Foursquare API did not return success');  // Error check response from foursquare
+			}  // if status Ok then continue placing pins
+			
+			
+			// Transform each venue result into a marker on the map.
+			for (var i = 0; i < result.response.venues.length; i++) {
+				var venue = result.response.venues[i];
+				// this is how the JSON response is set up. you need to construct like this to get the complete image url address
+			    //var imgURL = results.response.venue[i].photos.groups[0].items[0].prefix + 'width200' + results.response.venue[i].photos.groups[0].items[0].suffix
+			    // an object to store the relevant information that returned from JSON
+				var foursquarePlace = {
+				name: venue.name,
+				street: venue.location.address,
+				city: venue.location.city,
+				state: venue.location.state,
+				zip: venue.location.postalCode,
+				lat: venue.location.lat,
+				lng: venue.location.lng,
+				};
+				var latLng = new google.maps.LatLng(foursquarePlace.lat,foursquarePlace.lng);
+				var foursquareMarker = new google.maps.Marker({
+					position: latLng,
+					map: map,
+					title: foursquarePlace.name,
+					animation: google.maps.Animation.DROP,
+					icon: 'img/map-pin-4-square-34x22.png'
+			 //     img: imgURL
+				});
+				var foursquareContent = createInfoWindowContent(venue);
+				console.log('foursquare content' + foursquareContent);
+				
+				attachInfoWindow(foursquareMarker, foursquareContent);
+				
+				console.log('foursquarePlace' + " " + "lat:" + foursquarePlace.lat + " " + "lng:" + foursquarePlace.lng);	   
+			}  //  end for loop 
+		 
+		  }).error(function() { alert("Yikes, Foursquare API returned an error on that request. Sorry, there will be no Foursquare data for you:("); })
+			.complete(function() { console.log("foursquare request complete"); });  // All is well
+					  
+} // end load FourSquareData function
+	
+	//var infowindow = null;
+
+
+			
+
 
 //ko.applyBindings(myViewModel);

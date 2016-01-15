@@ -588,3 +588,8 @@ table {
 .iw_table_icon {
   text-align: right;
 }
+
+/*  Foursquare information formating */
+.foursquareinfo {
+	color: black;
+}
