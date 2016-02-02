@@ -14,10 +14,15 @@
    
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
     
-     <!-- Load Google Maps API -->
+     <!-- Load Google Maps API    -->
   
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"
-        async defer></script>
+  <!-- 
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"></script>
+        
+       
+    -->      
+         <script src="https://maps.googleapis.com/maps/api/js"></script> 
+          
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -80,12 +85,13 @@
     <header>
         <div class="container">
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-12">
                    <div class="get city">                  
                       <div id="findboatramps">Find Boat Ramps in your City:</div>
                       <div id="cityandcountry" align="left">
                           <table id="locationField">
                             <input id="autocomplete" placeholder="Enter a city" type="text" />
+                            
                           </table>
         
                           <table id="controls">
@@ -106,45 +112,28 @@
                               <option value="uk">United Kingdom</option>
                             </select>
                           </table>
+                          
                       </div><!-- End city and country -->
                 </div>
                       <div id="map"></div>
-                </div> <!-- end col-md-9 -->
-                
+                </div> <!-- end col-md-12 -->
+           </div>
+             <div class="row">
+   
                 <div class="col-md-3">
                     <div id="rampscloseby">Ramps Google Maps Search:</div>
-                        <div id="listing">
-                          <table id="resultsTable">
-                            <tbody id="results"></tbody>
-                          </table>
-                        </div>
+                    <p>Filter: <input data-bind="value: filter, valueUpdate: 'afterkeydown'" /></p>
                     
-                        <div style="display: none">
-                            <div id="info-content">
-                              <table>
-                                <tr id="iw-url-row" class="iw_table_row">
-                                  <td id="iw-icon" class="iw_table_icon"></td>
-                                  <td id="iw-url"></td>
-                                </tr>
-                                <tr id="iw-address-row" class="iw_table_row">
-                                  <td class="iw_attribute_name">Address:</td>
-                                  <td id="iw-address"></td>
-                                </tr>
-                                <tr id="iw-phone-row" class="iw_table_row">
-                                  <td class="iw_attribute_name">Telephone:</td>
-                                  <td id="iw-phone"></td>
-                                </tr>
-                                <tr id="iw-rating-row" class="iw_table_row">
-                                  <td class="iw_attribute_name">Rating:</td>
-                                  <td id="iw-rating"></td>
-                                </tr>
-                                <tr id="iw-website-row" class="iw_table_row">
-                                  <td class="iw_attribute_name">Website:</td>
-                                  <td id="iw-website"></td>
-                                </tr>
-                              </table>
-                            </div>
-                        </div>
+                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: points }"></div>
+						<script id="pointsTmpl" type="text/html">
+                            <p>
+                                Name: <span data-bind="text: name"></span>; 
+                                Lat: <span data-bind="text: lat"></span>;
+                                Long: <span data-bind="text: long"></span>
+                            </p>
+                        </script>
+                        
+                        
                   </div><!-- end col-md-3 --> 
              </div><!-- end row  -->  
              <div id="definepins" class="row">
@@ -161,7 +150,9 @@
         </div><!-- end map container -->
     </header>
 
-    <!-- Portfolio Grid Section -->
+    <!-- ********************   Resources Grid Section ****************************  -->
+    
+    
     <section id="portfolio">
         <div class="container">
             <div class="row">
@@ -359,8 +350,7 @@
     </div>
 
     
-    <!-- javascript file -->
-    <script src="js/app.js"></script>
+    
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
@@ -379,6 +369,13 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="js/freelancer.js"></script>
+    
+    <!-- knoockout file  -->
+    <script type="text/javascript" src="js/knockout-3.4.0.js"></script>
+    
+    <!-- javascript file -->
+    <script src="js/app.js"></script>
+
 
 </body>
 
