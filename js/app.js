@@ -87,19 +87,10 @@ function point(name, lat, long) {
     map: map,
 	animation: google.maps.Animation.DROP
     
-  });
-
-  
+  });  
 }
 
-/*
-var map = new google.maps.Map(document.getElementById('map'), {
-  zoom: 12,
-  center: new google.maps.LatLng(28.182882, -80.592502),
-  mapTypeId: google.maps.MapTypeId.ROADMAP
-});
-
-*/
+// ***************  VIEW MODEL  ****************  //
 
 var viewModel = {
   points: ko.observableArray([
@@ -124,7 +115,7 @@ viewModel.filteredItems = ko.dependentObservable(function() {
         return this.points();
     } else {
         return ko.utils.arrayFilter(this.points(), function(item) {
-            return ko.utils.stringStartsWith(point.name().toLowerCase(), filter);
+            return ko.utils.stringStartsWith(points.name().toLowerCase(), filter);
         });
     }
 }, viewModel);
