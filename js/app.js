@@ -1,6 +1,13 @@
 
 
 var map;
+var autocomplete;
+//Error handling if Google Maps fails to load within 8 seconds error message displayed. reference student code sheryllun-neighborhood map
+ 
+  var mapRequestTimeout = setTimeout(function() {
+    $('#map').html(' Oh My, Trouble loading Google Maps! Please refresh your browser and try again.');
+  }, 8000);
+
 
 (function initMap() {
  'use strict'; 
@@ -37,16 +44,39 @@ var map;
 	}
   } 
   
+   clearTimeout(mapRequestTimeout); // map loaded ok and no need for error message
+   
+  
+   /*
+  // Create the autocomplete object and associate it with the UI input control.
+  // Restrict the search to the default country, and to place type "cities".
+  
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement}   (document.getElementById('autocomplete')), {
+        types: ['(cities)'],
+        componentRestrictions: countryRestrict
+      });
+  places = new google.maps.places.PlacesService(map); // entered city lat/long
+
+  autocomplete.addListener('place_changed', onPlaceChanged);
+
+  // Add a DOM event listener to react when the user selects a country.
+  document.getElementById('country').addEventListener(
+      'change', setAutocompleteCountry);
+  */
+  
 }());
  
 
 
 
+// *****************  END INIT MAP   ****************** //
 
 
 
 
 function point(name, lat, long) {
+	
   this.name = name;
   this.lat = ko.observable(lat);
   this.long = ko.observable(long);
@@ -73,15 +103,16 @@ var map = new google.maps.Map(document.getElementById('map'), {
 
 var viewModel = {
   points: ko.observableArray([
-    new point('Boat Ramp 1', 28.18, -80.59),
-    new point('Boat Ramp 2', 28.19, -80.595),
-    new point('Boat Ramp 3', 28.20, -80.60)
+    new point(' A Boat Ramp 1', 28.18, -80.59),
+    new point(' B Boat Ramp 2', 28.19, -80.595),
+    new point(' C Boat Ramp 3', 28.20, -80.60)
   ]),
   filter: ko.observable("")
+
 };
 
 
-/*
+
 //*****     Filter the Results    *****
 
 
@@ -90,7 +121,7 @@ var viewModel = {
 viewModel.filteredItems = ko.dependentObservable(function() {
     var filter = this.filter().toLowerCase();
     if (!filter) {
-        return this.items();
+        return this.points();
     } else {
         return ko.utils.arrayFilter(this.items(), function(item) {
             return ko.utils.stringStartsWith(item.name().toLowerCase(), filter);
@@ -98,6 +129,6 @@ viewModel.filteredItems = ko.dependentObservable(function() {
     }
 }, viewModel);
 
-*/
+
 
 ko.applyBindings(viewModel);
