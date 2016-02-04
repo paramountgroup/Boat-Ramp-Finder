@@ -103,9 +103,9 @@ var map = new google.maps.Map(document.getElementById('map'), {
 
 var viewModel = {
   points: ko.observableArray([
-    new point(' A Boat Ramp 1', 28.18, -80.59),
-    new point(' B Boat Ramp 2', 28.19, -80.595),
-    new point(' C Boat Ramp 3', 28.20, -80.60)
+    new point('A Boat Ramp 1', 28.18, -80.59),
+    new point('B Boat Ramp 2', 28.19, -80.595),
+    new point('C Boat Ramp 3', 28.20, -80.60)
   ]),
   filter: ko.observable("")
 
@@ -123,8 +123,8 @@ viewModel.filteredItems = ko.dependentObservable(function() {
     if (!filter) {
         return this.points();
     } else {
-        return ko.utils.arrayFilter(this.items(), function(item) {
-            return ko.utils.stringStartsWith(item.name().toLowerCase(), filter);
+        return ko.utils.arrayFilter(this.points(), function(item) {
+            return ko.utils.stringStartsWith(point.name().toLowerCase(), filter);
         });
     }
 }, viewModel);
