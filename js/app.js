@@ -98,8 +98,12 @@ var viewModel = {
     new point('B Boat Ramp 2', 28.19, -80.595),
     new point('C Boat Ramp 3', 28.20, -80.60)
   ]),
-  filter: ko.observable("")
+  filter: ko.observable(""),
 
+ // addItem: function() {
+ //       this.items.push(new Item("New", "", 1))
+ //   },
+  // alert('the first element in points array is: ' + points()[0]),
 };
 
 
@@ -109,16 +113,31 @@ var viewModel = {
 
 //ko.utils.arrayFilter - filter the items using the filter text    //  (Found on JSFiddle written by rniemeyer http://jsfiddle.net/rniemeyer/vdcUA/)
 
-viewModel.filteredItems = ko.dependentObservable(function() {
+viewModel.points = ko.dependentObservable(function() {
     var filter = this.filter().toLowerCase();
+	
     if (!filter) {
         return this.points();
     } else {
+		console.log("what is this.points() just before the array filter " + this.points());
+		alert('the ramp name for the first point in points array is: ' + this.points()[0].name);
+		alert('the ramp name for the second point in points array is: ' + this.points()[1].name);
+		alert('the ramp name for the third point in points array is: ' + this.points()[2].name);
+	//	console.log("what is item " + item);
         return ko.utils.arrayFilter(this.points(), function(item) {
-            return ko.utils.stringStartsWith(points.name().toLowerCase(), filter);
+			console.log('what is item.name: ' + item.name());
+            return stringStartsWith(item.name().toLowerCase(), filter); // returns true if filter is same letter first letter in name
         });
     }
-}, viewModel);
+}, viewModel)
+// *************** END VIEW MODEL  *********************//
+
+var stringStartsWith = function (string, startsWith) {      // compare    
+        string = string || "";
+        if (startsWith.length > string.length)
+            return false;
+        return string.substring(0, startsWith.length) === startsWith;
+    };
 
 
 
