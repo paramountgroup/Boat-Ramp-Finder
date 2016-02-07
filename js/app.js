@@ -2,6 +2,70 @@
 
 var map;
 var autocomplete;
+
+var places, infoWindow;
+var markers = [];
+var autocomplete;
+var countryRestrict = {'country': 'us'};
+var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
+var hostnameRegexp = new RegExp('^https?://.+?/');
+var points;
+
+var countries = {
+  'au': {
+    center: {lat: -25.3, lng: 133.8},
+    zoom: 4
+  },
+  'br': {
+    center: {lat: -14.2, lng: -51.9},
+    zoom: 3
+  },
+  'ca': {
+    center: {lat: 62, lng: -110.0},
+    zoom: 3
+  },
+  'fr': {
+    center: {lat: 46.2, lng: 2.2},
+    zoom: 5
+  },
+  'de': {
+    center: {lat: 51.2, lng: 10.4},
+    zoom: 5
+  },
+  'mx': {
+    center: {lat: 23.6, lng: -102.5},
+    zoom: 4
+  },
+  'nz': {
+    center: {lat: -40.9, lng: 174.9},
+    zoom: 5
+  },
+  'it': {
+    center: {lat: 41.9, lng: 12.6},
+    zoom: 5
+  },
+  'za': {
+    center: {lat: -30.6, lng: 22.9},
+    zoom: 5
+  },
+  'es': {
+    center: {lat: 40.5, lng: -3.7},
+    zoom: 5
+  },
+  'pt': {
+    center: {lat: 39.4, lng: -8.2},
+    zoom: 6
+  },
+  'us': {
+    center: {lat: 37.1, lng: -95.7},
+    zoom: 3
+  },
+  'uk': {
+    center: {lat: 54.8, lng: -4.6},
+    zoom: 5
+  }
+};
+
 //Error handling if Google Maps fails to load within 8 seconds error message displayed. reference student code sheryllun-neighborhood map
  
   var mapRequestTimeout = setTimeout(function() {
@@ -46,26 +110,33 @@ var autocomplete;
   
    clearTimeout(mapRequestTimeout); // map loaded ok and no need for error message
    
+   
   
-   /*
+  
   // Create the autocomplete object and associate it with the UI input control.
   // Restrict the search to the default country, and to place type "cities".
   
   autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement}   (document.getElementById('autocomplete')), {
+        (document.getElementById('autocomplete')), {
         types: ['(cities)'],
         componentRestrictions: countryRestrict
       });
+	  
+	  console.log('what is the autocomplete ' + autocomplete);
+	  
   places = new google.maps.places.PlacesService(map); // entered city lat/long
 
   autocomplete.addListener('place_changed', onPlaceChanged);
 
   // Add a DOM event listener to react when the user selects a country.
+ 
   document.getElementById('country').addEventListener(
       'change', setAutocompleteCountry);
-  */
+	  
   
 }());
+
+
  
 
 
@@ -75,19 +146,27 @@ var autocomplete;
 
 
 
-function point(name, lat, long) {
-	
-  this.name = name;
+
+function point(name, lat, long) { //places markers on the map
+  
+  this.name = ko.observable(name);
   this.lat = ko.observable(lat);
   this.long = ko.observable(long);
-
+  
   var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(lat, long),
-    title: name,
-    map: map,
+	position: new google.maps.LatLng(lat,long),
+	title: name,
+	map: map,
 	animation: google.maps.Animation.DROP
-    
-  });  
+	
+  }); 
+  
+ 
+    google.maps.event.addListener(marker, function() {
+        var pos = marker.getPosition();
+        this.lat(pos.lat());
+        this.long(pos.lng());
+    }.bind(this)); 
 }
 
 // ***************  VIEW MODEL  ****************  //
@@ -98,47 +177,92 @@ var viewModel = {
     new point('B Boat Ramp 2', 28.19, -80.595),
     new point('C Boat Ramp 3', 28.20, -80.60)
   ]),
+  
   filter: ko.observable(""),
-
- // addItem: function() {
- //       this.items.push(new Item("New", "", 1))
- //   },
-  // alert('the first element in points array is: ' + points()[0]),
+  
+  
 };
 
 
 
-//*****     Filter the Results    *****
+//*********     Filter the Results    *******//
 
 
 //ko.utils.arrayFilter - filter the items using the filter text    //  (Found on JSFiddle written by rniemeyer http://jsfiddle.net/rniemeyer/vdcUA/)
 
 viewModel.points = ko.dependentObservable(function() {
-    var filter = this.filter().toLowerCase();
+    var startsWith = this.filter().toLowerCase();
+	self = this;
 	
-    if (!filter) {
-        return this.points();
+    if (!startsWith) {
+        return self.points();
     } else {
-		console.log("what is this.points() just before the array filter " + this.points());
-		alert('the ramp name for the first point in points array is: ' + this.points()[0].name);
-		alert('the ramp name for the second point in points array is: ' + this.points()[1].name);
-		alert('the ramp name for the third point in points array is: ' + this.points()[2].name);
-	//	console.log("what is item " + item);
         return ko.utils.arrayFilter(this.points(), function(item) {
-			console.log('what is item.name: ' + item.name());
-            return stringStartsWith(item.name().toLowerCase(), filter); // returns true if filter is same letter first letter in name
+            return item.name().toLowerCase().indexOf(startsWith) === 0; // return true if name starts with same letter entered
         });
     }
-}, viewModel)
+	console.log('viewModel: ' + viewModel);
+}, viewModel);
+
+
+
+// ********** End the Filter  **********//
+
+function onPlaceChanged() {
+  'use strict';
+  var place = autocomplete.getPlace();
+  console.log('what is this place you speak of ' + place);
+  if (place.geometry) {
+    map.panTo(place.geometry.location);
+	console.log('is this the lat long or city name? ' + place.geometry.location);
+    map.setZoom(12);
+    search();
+//	loadFourSquareData(place.geometry.location, map);  // Load markers using the Foursquare API
+  } else {
+    document.getElementById('autocomplete').placeholder = 'Enter a city';
+  }
+
+ var layer = new google.maps.FusionTablesLayer({
+	  query: {
+		select: '\'Geocodable address\'',
+		from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
+	  }
+  });
+  
+  layer.setMap(map); // load the fusion table pins
+  
+}
+
 // *************** END VIEW MODEL  *********************//
 
-var stringStartsWith = function (string, startsWith) {      // compare    
-        string = string || "";
-        if (startsWith.length > string.length)
-            return false;
-        return string.substring(0, startsWith.length) === startsWith;
-    };
 
+	
+function search() {
+  var search = {
+    bounds: map.getBounds(),
+    keyword: 'boat ramp',
+	radius: 3000
+  };
+}
+
+// Set the country restriction based on user input.
+// Also center and zoom the map on the given country.
+
+function setAutocompleteCountry() {
+  'use strict';
+  var country = document.getElementById('country').value;
+  if (country == 'all') {
+    autocomplete.setComponentRestrictions([]);
+    map.setCenter({lat: 15, lng: 0});
+    map.setZoom(2);
+  } else {
+    autocomplete.setComponentRestrictions({'country': country});
+    map.setCenter(countries[country].center);
+    map.setZoom(countries[country].zoom);
+  }
+  clearResults();
+  clearMarkers();
+}
 
 
 ko.applyBindings(viewModel);

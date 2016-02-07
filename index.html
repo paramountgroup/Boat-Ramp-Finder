@@ -15,13 +15,19 @@
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
     
      <!-- Load Google Maps API    -->
-  
-  <!-- 
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"></script>
+    
+ 
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places"></script>
         
-       
-    -->      
+       <!--  
+     
          <script src="https://maps.googleapis.com/maps/api/js"></script> 
+         
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&dummy=.js"></script>  
+ 
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"
+        async defer></script>    
+             --> 
           
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -122,7 +128,7 @@
    
                 <div class="col-md-3">
                     <div id="rampscloseby">Ramps Google Maps Search:</div>
-                    <p>Filter: <input data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Enter name"/></p>
+                    <p>Filter: <input type="search" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Enter name"/></p>
                     
                     <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: points }"></div>
 						<script id="pointsTmpl" type="text/html">
