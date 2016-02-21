@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +16,7 @@
      <!-- Load Google Maps API    -->
     
  
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
         
        <!--  
      
@@ -128,9 +127,9 @@
    
                 <div class="col-md-3">
                     <div id="rampscloseby">Ramps Google Maps Search:</div>
-                    <p>Filter: <input type="search" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Enter name"/></p>
+                    <p>Filter: <input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="Enter name"/></p>
                     
-                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: points }"></div>
+                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints }"></div>
 						<script id="pointsTmpl" type="text/html">
                             <p>
                                 Name: <span data-bind="text: name"></span>; 
@@ -386,3 +385,5 @@
 </body>
 
 </html>
+Status API Training Shop Blog About Pricing
+© 2016 GitHub, Inc. Terms Privacy Security Contact Help
