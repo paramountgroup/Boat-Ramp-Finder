@@ -18,6 +18,7 @@
  
 	<script src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
         
+        
        <!--  
      
          <script src="https://maps.googleapis.com/maps/api/js"></script> 
@@ -95,7 +96,7 @@
                       <div id="findboatramps">Find Boat Ramps in your City:</div>
                       <div id="cityandcountry" align="left">
                           <table id="locationField">
-                            <input id="autocomplete" placeholder="Enter a city" type="text" />
+                            <input id="autocomplete" placeholder="Enter your city" type="text" />
                             
                           </table>
         
@@ -124,17 +125,19 @@
                 </div> <!-- end col-md-12 -->
            </div>
              <div class="row">
+             
+             
    
                 <div class="col-md-3">
                     <div id="rampscloseby">Ramps Google Maps Search:</div>
-                    <p>Filter: <input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="Enter name"/></p>
+                    <p>Filter: <input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></p>
                     
-                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints }"></div>
+                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: self.filteredPoints }"></div>
 						<script id="pointsTmpl" type="text/html">
                             <p>
-                                Name: <span data-bind="text: name"></span>; 
-                                Lat: <span data-bind="text: lat"></span>;
-                                Long: <span data-bind="text: long"></span>
+                                Name: <span data-bind="text: name, click: $parent.showInfoWindow"></span>
+                         <!--       pos: <span data-bind="text: pos.lat"></span> -->
+                         <!--       Long: <span data-bind="text: long"></span>  -->
                             </p>
                         </script>
                         
@@ -378,8 +381,14 @@
     <!-- knoockout file  -->
     <script type="text/javascript" src="js/knockout-3.4.0.js"></script>
     
+      <!-- javascript file -->
+    <script src="js/smile.js"></script>
+
+    
     <!-- javascript file -->
     <script src="js/app.js"></script>
+    
+   
 
 
 </body>
