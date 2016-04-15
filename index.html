@@ -128,22 +128,27 @@
              
              
    
-                <div class="col-md-3">
+             <table class="col-sm-4 col-lg-4 col-md-4">
                     <div id="rampscloseby">Ramps Google Maps Search:</div>
                     <p>Filter: <input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></p>
                     
-                    <div id="points" data-bind="template: { name: 'pointsTmpl', foreach: self.filteredPoints }"></div>
+                    
+
+                   
+                    <div id="points" class="list-group" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints}"></div>
 						<script id="pointsTmpl" type="text/html">
-                            <p>
-                                Name: <span data-bind="text: name, click: $parent.showInfoWindow"></span>
-                         <!--       pos: <span data-bind="text: pos.lat"></span> -->
-                         <!--       Long: <span data-bind="text: long"></span>  -->
-                            </p>
+						
+                            <tr class="list-group-item points">
+                               <td data-bind="text: name, click: $parent.showInfoWindow"></td>
+                      
+                            </tr>
                         </script>
                         
                         
-                  </div><!-- end col-md-3 --> 
-             </div><!-- end row  -->  
+                        
+                  </table>
+             </div><!-- end row  --> 
+              
              <div id="definepins" class="row">
                 <div class="col-md-2">
                   <img src="img/map-pin-green.png" class="img-responsive" alt="map icon green">

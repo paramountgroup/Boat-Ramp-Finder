@@ -8,9 +8,10 @@ var markers = [];
 var countryRestrict = {'country': 'us'};
 var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
 var hostnameRegexp = new RegExp('^https?://.+?/');
-var points;
+//var points;
 var infowindow = new google.maps.InfoWindow();
 var filter;
+//var filteredPoints
 var countries = {
   'au': {
     center: {lat: -25.3, lng: 133.8},
@@ -146,9 +147,10 @@ var countries = {
 
 
 var viewModel = function(datafromapi) {
-	
-	this.points = [];
-	
+	this.filteredPoints = ko.observableArray([]);
+	console.log('filteredPoints isObervable: ' + ko.isObservable(this.filteredPoints));
+	this.points = ko.observableArray([]);
+	console.log('this.points isObervable: ' + ko.isObservable(this.points));
  this.points = ko.utils.arrayMap(datafromapi, function(item) {
 	
 	 return new point(item.name, item.pos, item.icon);	  
@@ -162,34 +164,37 @@ var viewModel = function(datafromapi) {
  };
  
  
-  self = this;
+  var self = this;
   this.filterLetter = ko.observable();
   
 
-  self.filteredPoints = ko.computed(function() {
+  this.filteredPoints = ko.computed(function() {
     var filter = this.filterLetter();
-	console.log('this.filterLetter() ' + this.filterLetter());
-	console.log('filter is: ' + filter);
+//	console.log('this.filterLetter() ' + this.filterLetter());
+//	console.log('filter is: ' + filter);
 
     if (!filter) {
 		console.log(' in filter if filter is: ' + filter);
      return ko.utils.arrayFilter(self.points, function(item) {
-		 console.log('item.name: ' + item.name);
-		 console.log('this should run every time city changes');
+		 
+//		 console.log('item.name: ' + item.name);
+//		 console.log('this should run every time city changes');
 		item.marker.setVisible(true);
         return true;
       });
     }
 
-    return ko.utils.arrayFilter(self.points, function(item) {
+    return ko.utils.arrayFilter(filteredPoints(), function(item) {
+		self.points = this.filteredPoints();
       if (item.name.toLowerCase().indexOf(filter) === 0) {
-		  console.log('only run if there is a filter letter');
+//		  console.log('only run if there is a filter letter');
         return true
       } else {
         item.marker.setVisible(false);
         return false
       };
     });
+//	console.log('self.filteredPoints: ' + self.filteredPoints);
 
   }, this);
 };
