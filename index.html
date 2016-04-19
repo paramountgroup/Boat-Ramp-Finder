@@ -89,15 +89,13 @@
 
     <!-- Header -->
     <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="container">
+            <div class="row fill_screen">
+              <div class="col-md-9">
                    <div class="get city">                  
-                      <div id="findboatramps">Find Boat Ramps in your City:</div>
                       <div id="cityandcountry" align="left">
                           <table id="locationField">
                             <input id="autocomplete" placeholder="Enter your city" type="text" />
-                            
                           </table>
         
                           <table id="controls">
@@ -122,32 +120,29 @@
                       </div><!-- End city and country -->
                 </div>
                       <div id="map"></div>
-                </div> <!-- end col-md-12 -->
+                </div> <!-- end col-md-9 -->
+                
+               <div class="col-sm-3 col-lg-3 col-md-3">
+                         <table>
+                         <thead>
+                         <tr>
+                         <th class="lead"><input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></th>
+                          </tr> 
+                          </thead>   
+                           <tbody id="points" class="list-group" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints}"></tbody>
+                                    <script id="pointsTmpl" type="text/html">
+                                    
+                                        <tr class="list-group-item points">
+                                           <td data-bind="text: name, click: $parent.showInfoWindow"></td>
+                                  
+                                        </tr>
+                                    </script>               
+                                    
+                          </table>
+                </div> <!-- end col-md-3 -->
+            
            </div>
-             <div class="row">
              
-             
-   
-             <table class="col-sm-4 col-lg-4 col-md-4">
-                    <div id="rampscloseby">Ramps Google Maps Search:</div>
-                    <p>Filter: <input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></p>
-                    
-                    
-
-                   
-                    <div id="points" class="list-group" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints}"></div>
-						<script id="pointsTmpl" type="text/html">
-						
-                            <tr class="list-group-item points">
-                               <td data-bind="text: name, click: $parent.showInfoWindow"></td>
-                      
-                            </tr>
-                        </script>
-                        
-                        
-                        
-                  </table>
-             </div><!-- end row  --> 
               
              <div id="definepins" class="row">
                 <div class="col-md-2">
@@ -160,6 +155,7 @@
                   <div class="col-md-4">Blue Pins - User Entered</div>
                 <div>
              </div><!-- End Row   -->          
+        </div>
         </div><!-- end map container -->
     </header>
 

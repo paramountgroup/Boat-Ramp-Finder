@@ -10,8 +10,8 @@ var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
 var hostnameRegexp = new RegExp('^https?://.+?/');
 //var points;
 var infowindow = new google.maps.InfoWindow();
-var filter;
-//var filteredPoints
+//var filter;
+// var filteredPoints
 var countries = {
   'au': {
     center: {lat: -25.3, lng: 133.8},
@@ -134,11 +134,11 @@ var countries = {
  // Search for boat ramps in the selected city, within the viewport of the map.
 
 
+
+
+// *****************  END INIT MAP   ****************
+
 }());
-
-
-// *****************  END INIT MAP   ****************** //
-
 
 
 // ***************  VIEW MODEL  ****************  //
@@ -147,15 +147,15 @@ var countries = {
 
 
 var viewModel = function(datafromapi) {
-	this.filteredPoints = ko.observableArray([]);
-	console.log('filteredPoints isObervable: ' + ko.isObservable(this.filteredPoints));
+	var filteredPoints = ko.observableArray([]);
+	console.log('filteredPoints isObervable: ' + ko.isObservable(filteredPoints));
 	this.points = ko.observableArray([]);
 	console.log('this.points isObervable: ' + ko.isObservable(this.points));
  this.points = ko.utils.arrayMap(datafromapi, function(item) {
 	
 	 return new point(item.name, item.pos, item.icon);	  
  });
- 
+// this.filteredPoints() = this.points;
  
  
  this.showInfoWindow = function(clickedName) {
@@ -165,34 +165,44 @@ var viewModel = function(datafromapi) {
  
  
   var self = this;
-  this.filterLetter = ko.observable();
+  self.filterLetter = ko.observable();
   
 
-  this.filteredPoints = ko.computed(function() {
-    var filter = this.filterLetter();
+  self.filteredPoints = ko.dependentObservable(function() {
+    var filter = self.filterLetter();
 //	console.log('this.filterLetter() ' + this.filterLetter());
 //	console.log('filter is: ' + filter);
 
     if (!filter) {
 		console.log(' in filter if filter is: ' + filter);
+		console.log('this.points: ' + this.points);
+		self.filteredPoints = this.points;
      return ko.utils.arrayFilter(self.points, function(item) {
-		 
-//		 console.log('item.name: ' + item.name);
-//		 console.log('this should run every time city changes');
+		 console.log('in !filter assigning to filteredPoints'); 
+		 console.log('item.name: ' + item.name);
+	
 		item.marker.setVisible(true);
         return true;
       });
     }
+	
+	
+//console.log('this.filteredPoints: ' + this.filteredPoints());
+//self.filteredPoints = this.filteredPoints();
+//console.log('self.filteredPoints: ' + self.filteredPoints());
 
-    return ko.utils.arrayFilter(filteredPoints(), function(item) {
-		self.points = this.filteredPoints();
+    return ko.utils.arrayFilter(this.points, function(item) {
+	//console.log('this.filteredPoints: ' + this.filteredPoints());
+	//console.log('filteredPoints(): ' + this.filteredPoints());
+	//console.log('this.points: ' + this.points);
       if (item.name.toLowerCase().indexOf(filter) === 0) {
-//		  console.log('only run if there is a filter letter');
-        return true
+		  console.log('only run if there is a filter letter');
+        return true;
       } else {
         item.marker.setVisible(false);
-        return false
-      };
+        return false;
+      }
+	//  self.filteredPoints = this.filteredPoints;  // set previously filtered array as the new starting point
     });
 //	console.log('self.filteredPoints: ' + self.filteredPoints);
 
@@ -202,9 +212,9 @@ var viewModel = function(datafromapi) {
 
 // ********** End the viewModel  **********//
 
-function point(name, latLong, pinicon) {
 
-	
+
+function point(name, latLong, pinicon) {
   this.name = name;
 //  this.lat = ko.observable(lat);
 //  this.long = ko.observable(long);
