@@ -9,25 +9,12 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="The Paramount Group.us">
-    
-   
+       
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
     
      <!-- Load Google Maps API    -->
     
- 
 	<script src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
-        
-        
-       <!--  
-     
-         <script src="https://maps.googleapis.com/maps/api/js"></script> 
-         
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&dummy=.js"></script>  
- 
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbJ-DsF8CAJ0dyf2PGiu8JJEl1mA4W4Uk&signed_in=true&libraries=places&callback=initMap"
-        async defer></script>    
-             --> 
           
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -49,7 +36,7 @@
 
 </head>
 
-<body id="page-top" class="index">
+<body>
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -87,77 +74,78 @@
         <!-- /.container-fluid -->
     </nav>
 
-    <!-- Header -->
-    <header>
-            <div class="container">
-            <div class="row fill_screen">
-              <div class="col-md-9">
-                   <div class="get city">                  
-                      <div id="cityandcountry" align="left">
-                          <table id="locationField">
-                            <input id="autocomplete" placeholder="Enter your city" type="text" />
-                          </table>
-        
-                          <table id="controls">
-                            <select id="country">
-                              <option value="all">All</option>
-                              <option value="au">Australia</option>
-                              <option value="br">Brazil</option>
-                              <option value="ca">Canada</option>
-                              <option value="fr">France</option>
-                              <option value="de">Germany</option>
-                              <option value="mx">Mexico</option>
-                              <option value="nz">New Zealand</option>
-                              <option value="it">Italy</option>
-                              <option value="za">South Africa</option>
-                              <option value="es">Spain</option>
-                              <option value="pt">Portugal</option>
-                              <option value="us" selected>U.S.A.</option>
-                              <option value="uk">United Kingdom</option>
-                            </select>
-                          </table>
-                          
-                      </div><!-- End city and country -->
-                </div>
-                      <div id="map"></div>
-                </div> <!-- end col-md-9 -->
-                
-               <div class="col-sm-3 col-lg-3 col-md-3">
-                         <table>
-                         <thead>
-                         <tr>
-                         <th class="lead"><input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></th>
-                          </tr> 
-                          </thead>   
-                           <tbody id="points" class="list-group" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints}"></tbody>
-                                    <script id="pointsTmpl" type="text/html">
-                                    
-                                        <tr class="list-group-item points">
-                                           <td data-bind="text: name, click: $parent.showInfoWindow"></td>
-                                  
-                                        </tr>
-                                    </script>               
-                                    
-                          </table>
-                </div> <!-- end col-md-3 -->
-            
-           </div>
-             
-              
-             <div id="definepins" class="row">
-                <div class="col-md-2">
-                  <img src="img/map-pin-green.png" class="img-responsive" alt="map icon green">
-                </div>
-                <div class="col-md-4">Green Pins - Google maps search</div>
-                <div class="col-md-2">
-                  <img src="img/map-pin-blue.png" class="img-responsive" alt=" map icon green">
-                </div>
-                  <div class="col-md-4">Blue Pins - User Entered</div>
-                <div>
-             </div><!-- End Row   -->          
+
+    <!-- Map Section -->
+    
+    <section id="mapsection"> 
+      <div class="row">
+          <div id="cityandcountry" class="col-sm-12 col-lg-12 col-md-12" align="left">
+                      <table id="locationField">
+                        <input id="autocomplete" placeholder="Enter your city" type="text" />
+                      </table>
+    
+                      <table id="controls">
+                        <select id="country">
+                          <option value="all">All</option>
+                          <option value="au">Australia</option>
+                          <option value="br">Brazil</option>
+                          <option value="ca">Canada</option>
+                          <option value="fr">France</option>
+                          <option value="de">Germany</option>
+                          <option value="mx">Mexico</option>
+                          <option value="nz">New Zealand</option>
+                          <option value="it">Italy</option>
+                          <option value="za">South Africa</option>
+                          <option value="es">Spain</option>
+                          <option value="pt">Portugal</option>
+                          <option value="us" selected>U.S.A.</option>
+                          <option value="uk">United Kingdom</option>
+                        </select>
+                      </table>
+            </div><!-- End city and country -->
+       </div>  <!-- End Row -->
+          <div  class="row"> <!-- display map with markers and display list of locations-->
+             <div id="maprow" class="col-sm-9 col-lg-9 col-md-9">
+                <div id="map"></div>
+             </div> <!-- end col-md-9 -->
+         
+             <div class="col-sm-3 col-lg-3 col-md-3"> <!-- display google places boat ramps -->
+                 <table>
+                     <thead>
+                       <tr>
+                       <th class="lead"><input type="search" data-bind="value: filterLetter, valueUpdate: 'afterkeydown'" placeholder="filter by name"/></th>
+                       </tr> 
+                     </thead>   
+                     <tbody id="points" class="list-group" data-bind="template: { name: 'pointsTmpl', foreach: filteredPoints}"></tbody>
+                        <script id="pointsTmpl" type="text/html">
+                        
+                            <tr class="list-group-item points">
+                               <td data-bind="img: icon, text: name, click: $parent.showInfoWindow"></td>
+                      
+                            </tr>
+                        </script>                           
+                  </table>
+              </div> <!-- end col-md-3 -->
+      
+     </div> <!-- End Row -->
+          
+    <div id="definepins" class="row">
+        <div class="col-md-4">
+          <img src="img/map-pin-green.png" class="img-responsive" alt="map icon green">
+          <div>Green Pins - Google maps search</div>
         </div>
-        </div><!-- end map container -->
-    </header>
+        
+        <div class="col-md-4">
+          <img src="img/map-pin-blue.png" class="img-responsive" alt=" map icon green">
+          <div>Blue Pins - User Entered</div>
+        </div>
+        <div class="col-md-4">
+          <img src="img/map-pin-foursquare.png" class="img-responsive" alt=" map icon foursquare">
+          <div>Four Square Pins</div>
+        </div>
+     </div><!-- End Row   -->          
+   </section> <!-- End Container for Map Section-->
+
 
     <!-- ********************   Resources Grid Section ****************************  -->
     
@@ -206,7 +194,7 @@
         </div>
     </section>
     <!-- Add a boat Ramp  -->   
-     <section id="portfolio">
+    <section id="portfolio">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -241,7 +229,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
-                    <p>Boat Ramp Finder uses the Google Maps API to help find Boat Ramps in your local area. The website also takes additional input from the Fusion Tables maintained by The Paramount Group.us, inc. These tables offer supplemental locations that are not found using the Google Maps search.</p>
+                    <p>Boat Ramp Finder uses the Google Maps & FourSquare API to help find Boat Ramps in your local area. The website also takes additional input from the Fusion Tables maintained by The Paramount Group.us, inc. These tables offer supplemental locations that are not found using the Google Maps search.</p>
                 </div>
                 <div class="col-lg-4">
                     <p>Boat Ramp Finder is a great starter website that will offer useful information to the public and be easily expanded. The Fusion table option has a great many other uses for small businesses that need to display information on Google Maps for their company websites.</p>
@@ -305,8 +293,7 @@
             </div>
         </div>
     </section>
- 
- 
+  
     <!-- Footer -->
     <footer class="text-center">
         <div class="footer-above">
@@ -358,9 +345,6 @@
         </a>
     </div>
 
-    
-    
-
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
@@ -384,16 +368,11 @@
     
       <!-- javascript file -->
     <script src="js/smile.js"></script>
-
-    
+   
     <!-- javascript file -->
     <script src="js/app.js"></script>
-    
-   
-
+ 
 
 </body>
 
 </html>
-Status API Training Shop Blog About Pricing
-© 2016 GitHub, Inc. Terms Privacy Security Contact Help

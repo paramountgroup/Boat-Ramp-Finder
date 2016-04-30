@@ -1,17 +1,13 @@
 
 
 var map;
-var autocomplete;
 var discover;
-var places, infoWindow;
+var autocomplete;
+var places;
 var markers = [];
-var countryRestrict = {'country': 'us'};
 var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
-var hostnameRegexp = new RegExp('^https?://.+?/');
-//var points;
 var infowindow = new google.maps.InfoWindow();
-//var filter;
-// var filteredPoints
+var mappedArray;
 var countries = {
   'au': {
     center: {lat: -25.3, lng: 133.8},
@@ -76,6 +72,7 @@ var countries = {
 
 (function initMap() {
  'use strict';
+ var countryRestrict = {'country': 'us'};
  var myLatLng = {lat: 37.42, lng: -122.08}; // googleplex
 //  var myLatLng = {lat: 28.182882, lng: -80.592502};
 
@@ -99,7 +96,7 @@ var countries = {
   });
 
 
-  marker.addListener('click', toggleBounce);
+  marker.addListener('click', toggleBounce);  // click listener to stop or start bouncing logo
 
   function toggleBounce() {
 	if (marker.getAnimation() !== null) {
@@ -109,7 +106,7 @@ var countries = {
 	}
   } 
   
-   clearTimeout(mapRequestTimeout); // map loaded ok and no need for error message
+   clearTimeout(mapRequestTimeout); // map loaded ok so no need for error message
     
   
   // Create the autocomplete object and associate it with the UI input control.
@@ -118,12 +115,10 @@ var countries = {
   autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
 					types: ['(cities)'],
 					componentRestrictions: countryRestrict
-				  });
-	  
-	  
+				  });	  
 	  
   places = new google.maps.places.PlacesService(map); // entered city lat/long
-
+// Search for boat ramps in the selected city, within the viewport of the map.
   autocomplete.addListener('place_changed', onPlaceChanged);
 
   // Add a DOM event listener to react when the user selects a country.
@@ -131,83 +126,50 @@ var countries = {
   document.getElementById('country').addEventListener('change', setAutocompleteCountry); 
 	  
 
- // Search for boat ramps in the selected city, within the viewport of the map.
+ 
 
 
-
-
-// *****************  END INIT MAP   ****************
+  mappedArray = ko.utils.arrayMap(smile, function(item) { // preloads an array of points from the smile.js file 
+    return new point(item.name, item.pos, item.icon); // icon is not defined uses default google maps icon.
+  });
+  
 
 }());
 
+// *****************  END INIT MAP   ****************  //
 
-// ***************  VIEW MODEL  ****************  //
+// ***************  NEW VIEW MODEL  ****************  //
 
+var viewModel = {
+  points: ko.observableArray([]),
+  filterLetter: ko.observable(""),
+  showInfoWindow: function(point) {
+    infowindow.setContent(point.marker.info.content);
+    infowindow.open(map, point.marker);
+  }
+};
 
-
-
-var viewModel = function(datafromapi) {
-	var filteredPoints = ko.observableArray([]);
-	console.log('filteredPoints isObervable: ' + ko.isObservable(filteredPoints));
-	this.points = ko.observableArray([]);
-	console.log('this.points isObervable: ' + ko.isObservable(this.points));
- this.points = ko.utils.arrayMap(datafromapi, function(item) {
-	
-	 return new point(item.name, item.pos, item.icon);	  
- });
-// this.filteredPoints() = this.points;
- 
- 
- this.showInfoWindow = function(clickedName) {
-	 infowindow.setContent(clickedName.marker.info.content);
-	 infowindow.open(map, clickedName.marker);
- };
- 
- 
+//ko.utils.arrayFilter - filter the items using the filter text
+viewModel.filteredPoints = ko.dependentObservable(function() {
+  var filter = this.filterLetter().toLowerCase();
   var self = this;
-  self.filterLetter = ko.observable();
-  
-
-  self.filteredPoints = ko.dependentObservable(function() {
-    var filter = self.filterLetter();
-//	console.log('this.filterLetter() ' + this.filterLetter());
-//	console.log('filter is: ' + filter);
-
-    if (!filter) {
-		console.log(' in filter if filter is: ' + filter);
-		console.log('this.points: ' + this.points);
-		self.filteredPoints = this.points;
-     return ko.utils.arrayFilter(self.points, function(item) {
-		 console.log('in !filter assigning to filteredPoints'); 
-		 console.log('item.name: ' + item.name);
-	
-		item.marker.setVisible(true);
-        return true;
-      });
-    }
-	
-	
-//console.log('this.filteredPoints: ' + this.filteredPoints());
-//self.filteredPoints = this.filteredPoints();
-//console.log('self.filteredPoints: ' + self.filteredPoints());
-
-    return ko.utils.arrayFilter(this.points, function(item) {
-	//console.log('this.filteredPoints: ' + this.filteredPoints());
-	//console.log('filteredPoints(): ' + this.filteredPoints());
-	//console.log('this.points: ' + this.points);
+  if (!filter) {
+    // return self.points() the original array;
+    return ko.utils.arrayFilter(self.points(), function(item) {
+      item.marker.setVisible(true);
+      return true;
+    });
+  } else {
+    return ko.utils.arrayFilter(this.points(), function(item) {
       if (item.name.toLowerCase().indexOf(filter) === 0) {
-		  console.log('only run if there is a filter letter');
-        return true;
+        return true
       } else {
         item.marker.setVisible(false);
-        return false;
-      }
-	//  self.filteredPoints = this.filteredPoints;  // set previously filtered array as the new starting point
+        return false
+      };
     });
-//	console.log('self.filteredPoints: ' + self.filteredPoints);
-
-  }, this);
-};
+  }
+}, viewModel);
 
 
 // ********** End the viewModel  **********//
@@ -216,14 +178,10 @@ var viewModel = function(datafromapi) {
 
 function point(name, latLong, pinicon) {
   this.name = name;
-//  this.lat = ko.observable(lat);
-//  this.long = ko.observable(long);
-
   this.marker = new google.maps.Marker({
 	    position: latLong,
           
-  //        icon: markerIcon,
-  //  position: new google.maps.LatLng(lat,long),
+ 
     title: name,
     map: map,
 	animation: google.maps.Animation.DROP,
@@ -244,35 +202,31 @@ function point(name, latLong, pinicon) {
 }
 
 function search() {
-  var search = {
-	  
+  var search = { 
     bounds: map.getBounds(),
-//	types: ['lodging']
     keyword: 'boat ramp',
 	radius: 3000
-  
   };
  
   
 places.nearbySearch(search, function(results, status) {
+	discover = results;
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-		discover = results;
 
 //      clearResults();
 //      clearMarkers();
-      // Create a marker for each hotel found, and
+      // Create a marker icon for each boat ramp found, and
       // assign a letter of the alphabetic to each marker icon.
       for (var i = 0; i < results.length; i++) {
         var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i);
         var markerIcon = MARKER_PATH + markerLetter + '.png';
         // Use marker animation to drop the icons incrementally on the map.
-//		console.log(' location from results: ' + results[i].geometry.location.lat);
         markers[i] = {
 		  name: results[i].name,
           pos: results[i].geometry.location,
           icon: markerIcon,
         };
-	//	console.log('markers[i].name: ' + markers[i].position);
+	
 		
         // If the user clicks a boat ramp marker, show the details of that ramp
         // in an info window.
@@ -283,8 +237,10 @@ places.nearbySearch(search, function(results, status) {
 //        addResult(results[i], i);
       } // End for loop
 //	  console.log('sending markers to viewModel :' + markers);
-		viewModel(markers);
-
+ var markersToViewModel = ko.utils.arrayMap(markers, function(item) {
+    return new point(item.name, item.pos, item.icon);
+  });
+	 viewModel.points(markersToViewModel); // send new array of points to viewModel from Google Places new location
     }
 });
 }
@@ -292,26 +248,23 @@ places.nearbySearch(search, function(results, status) {
 function onPlaceChanged() {
   'use strict';
   var place = autocomplete.getPlace();
- // console.log('what is this place you speak of ' + place);
   if (place.geometry) {
     map.panTo(place.geometry.location);
-//	console.log('is this the lat long or city name? ' + place.geometry.location);
-    map.setZoom(12);
+    map.setZoom(11);
     search();
 	loadFourSquareData(place.geometry.location, map);  // Load markers using the Foursquare API
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
 
- var layer = new google.maps.FusionTablesLayer({
-	  query: {
-		select: '\'Geocodable address\'',
-		from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
-	  }
-  });
+  var layer = new google.maps.FusionTablesLayer({
+	query: {
+	  select: '\'Geocodable address\'',
+	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
+	}
+	});
   
-  layer.setMap(map); // load the fusion table pins
-  
+  layer.setMap(map); // load the fusion table pins that are user recommended boat ramp locations  
 }
 
 // *************** END VIEW MODEL  *********************//
@@ -451,6 +404,14 @@ function clearMarkers() {
   markers = [];
 }
 
-var myViewModel = new viewModel(smile); // create a new object and store it in a variable
-ko.applyBindings(myViewModel); // activate knockout
+//var myViewModel = new viewModel(smile); // create a new object and store it in a variable
+
+
+
+
+
+
+//console.log('mappedArray: ' + mappedArray);
+viewModel.points(mappedArray);
+ko.applyBindings(viewModel); // activate knockout
 //ko.applyBindings(new viewModel(smile));
