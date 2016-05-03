@@ -1,6 +1,7 @@
 
 
 var map;
+var venue = [];
 var discover;
 var autocomplete;
 var places;
@@ -264,10 +265,10 @@ function onPlaceChanged() {
 	}
 	});
   
-  layer.setMap(map); // load the fusion table pins that are user recommended boat ramp locations  
+  layer.setMap(map); // load the fusion table pins that are user recommended boat ramp locations
 }
 
-// *************** END VIEW MODEL  *********************//
+
 
 // *************** GET FOURSQUARE DATA *****************//
 
@@ -300,13 +301,9 @@ https://api.foursquare.com/v2/venues/search
 		var styleResponse = '&m=foursquare';
         var apiEndpoint = 'https://api.foursquare.com/v2/venues/search?client_id=' + foursquareId + '&client_secret=' + foursquaresecret + '&ll=' + formattedcitylatlong + '&query=boatramp' +'&v=' + foursquareVersion + styleResponse;
         
-//		console.log(apiEndpoint);
+
 
         $.getJSON(apiEndpoint, function(result, status) {
-//			console.log('report status ' + status);
-            // var venue = json.response.groups[0].items[0].venue;
-            
-//			console.log('what foursquare sent back', result);
 
 			if (status !== 'success') { 
 				return alert('JSON Request to Foursquare API did not return success');  // Error check response from foursquare
@@ -315,18 +312,33 @@ https://api.foursquare.com/v2/venues/search
 			
 			// Transform each venue result into a marker on the map.
 			for (var i = 0; i < result.response.venues.length; i++) {
-				var venue = result.response.venues[i];
+				
+				venue[i] = result.response.venues[i];
+				
+				
+				
+				if (venue[i].location.address === undefined) {
+					venue[i].location.address = "No street address available";
+				}
+				
+				if (venue[i].location.city === undefined) {
+					venue[i].location.city = "";
+				}
+				if (venue[i].location.state === undefined) {
+					venue[i].location.state = "";
+				}
+				
 				// this is how the JSON response is set up. you need to construct like this to get the complete image url address
 			    //var imgURL = results.response.venue[i].photos.groups[0].items[0].prefix + 'width200' + results.response.venue[i].photos.groups[0].items[0].suffix
 			    // an object to store the relevant information that returned from JSON
 				var foursquarePlace = {
-				name: venue.name,
-				street: venue.location.address,
-				city: venue.location.city,
-				state: venue.location.state,
-				zip: venue.location.postalCode,
-				lat: venue.location.lat,
-				lng: venue.location.lng,
+				name: venue[i].name,
+				street: venue[i].location.address,
+				city: venue[i].location.city,
+				state: venue[i].location.state,
+				zip: venue[i].location.postalCode,
+				lat: venue[i].location.lat,
+				lng: venue[i].location.lng,
 				};
 				var foursquareicon = 'img/map-pin-4-square-34x22.png';
 				var latLng = new google.maps.LatLng(foursquarePlace.lat,foursquarePlace.lng);
@@ -338,13 +350,22 @@ https://api.foursquare.com/v2/venues/search
 					icon: 'img/map-pin-4-square-34x22.png'
 			 //     img: imgURL
 				});
-				var foursquareContent = createInfoWindowContent(venue);
-			//	console.log('foursquare content' + foursquareContent);
+				var foursquareContent = createInfoWindowContent(venue[i]);
 				
 				attachInfoWindow(foursquareMarker, foursquareContent);
 				
-//				console.log('foursquarePlace' + " " + "lat:" + foursquarePlace.lat + " " + "lng:" + foursquarePlace.lng);	   
+   
 			}  //  end for loop 
+			console.log('foursqaure venue: ' + venue);
+			console.log('foursqaure venue.name: ' + venue.name);
+			console.log('foursqaure venue.pos: ' + venue.pos);
+			console.log('foursqaure venue.icon: ' + venue.icon);
+			 var markersToViewModel = ko.utils.arrayMap(venue, function(item) {
+				 console.log('foursqaure venue: ' + venue);
+				return new point(item.name, item.pos, foursquareicon);
+				
+			 });
+			 viewModel.points(markersToViewModel); // send new array of points to viewModel from Foursquare new location
 		 
 		  }).error(function() { alert("Yikes, Foursquare API returned an error on that request. Sorry, there will be no Foursquare data for you:("); })
 			.complete(function() { console.log("foursquare request complete"); });  // All is well
@@ -404,14 +425,6 @@ function clearMarkers() {
   markers = [];
 }
 
-//var myViewModel = new viewModel(smile); // create a new object and store it in a variable
 
-
-
-
-
-
-//console.log('mappedArray: ' + mappedArray);
 viewModel.points(mappedArray);
 ko.applyBindings(viewModel); // activate knockout
-//ko.applyBindings(new viewModel(smile));
