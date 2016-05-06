@@ -9,7 +9,7 @@ Instructions
 
 * Enter City you would like to find a boat ramp
 * Click on Marker for information
-* Click on Handy links to make you trip safer
+* Click on handy links to make your boating trip safer
 
 
 Features
