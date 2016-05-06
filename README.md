@@ -2,8 +2,15 @@
 --------
 
 
-Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queiries Google Maps for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/project-5 It's neve mobile friendly. Users are able to update the boat ramp database by filling out the website form and submitting. Upon approval new locations will be added to the Fusion Tables database. Code on the website does not need to be changed to add new locations. Changes are made in the Fusion Table database. 
+Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queiries Foursquare API for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/project-5 It's neve mobile friendly. Users are able to update the boat ramp database by filling out the website form and submitting. Upon approval new locations will be added to the Fusion Tables database. Code on the website does not need to be changed to add new locations. Changes are made in the Fusion Table database. 
 ***
+Instructions
+-------
+
+* Enter City you would like to find a boat ramp
+* Click on Marker for information
+* Click on Handy links to make you trip safer
+
 
 Features
 -------
