@@ -1,13 +1,12 @@
 
 
 var map;
-var venue = [];
-var discover;
+var venue = []
 var autocomplete;
 var places;
 var markers = [];
 var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
-var infowindow = new google.maps.InfoWindow();
+//var infowindow = new google.maps.InfoWindow();
 var mappedArray;
 var countries = {
   'au': {
@@ -99,13 +98,7 @@ var countries = {
 
   marker.addListener('click', toggleBounce);  // click listener to stop or start bouncing logo
 
-  function toggleBounce() {
-	if (marker.getAnimation() !== null) {
-	  marker.setAnimation(null);
-	} else {
-	  marker.setAnimation(google.maps.Animation.BOUNCE);
-	}
-  } 
+  
   
    clearTimeout(mapRequestTimeout); // map loaded ok so no need for error message
     
@@ -131,7 +124,7 @@ var countries = {
 
 
   mappedArray = ko.utils.arrayMap(smile, function(item) { // preloads an array of points from the smile.js file 
-    return new point(item.name, item.pos, item.icon); // icon is not defined uses default google maps icon.
+    return new point(item.name, item.pos, item.icon, item.content); // icon is not defined uses default google maps icon.
   });
   
 
@@ -140,7 +133,7 @@ var countries = {
 // *****************  END INIT MAP   ****************  //
 
 // ***************  NEW VIEW MODEL  ****************  //
-
+var infowindow = new google.maps.InfoWindow();
 var viewModel = {
   points: ko.observableArray([]),
   filterLetter: ko.observable(""),
@@ -177,12 +170,11 @@ viewModel.filteredPoints = ko.dependentObservable(function() {
 
 
 
-function point(name, latLong, pinicon) {
+function point(name, latLong, pinicon, infoContent) {
+
   this.name = name;
   this.marker = new google.maps.Marker({
-	    position: latLong,
-          
- 
+	position: latLong,
     title: name,
     map: map,
 	animation: google.maps.Animation.DROP,
@@ -191,16 +183,19 @@ function point(name, latLong, pinicon) {
   
   
   this.marker.info = new google.maps.InfoWindow({
-	  content: '<div class="infowin"><strong>' + name + '</strong><br>'});
+	  content: infoContent});
 	 
   
   google.maps.event.addListener(this.marker, 'click', function() { 
   var marker_map = this.getMap();
     this.info.open(marker_map, this);
-  
-  
-  });
+    //Change the marker icon when clicked
+    this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  }); 
+
 }
+
+/****** This function is not requried for the project to be graded and by udacity *******
 
 function search() {
   var search = { 
@@ -209,9 +204,10 @@ function search() {
 	radius: 3000
   };
  
+
   
 places.nearbySearch(search, function(results, status) {
-	discover = results;
+
     if (status === google.maps.places.PlacesServiceStatus.OK) {
 
 //      clearResults();
@@ -226,25 +222,19 @@ places.nearbySearch(search, function(results, status) {
 		  name: results[i].name,
           pos: results[i].geometry.location,
           icon: markerIcon,
-        };
-	
+        };// End for loop
 		
-        // If the user clicks a boat ramp marker, show the details of that ramp
-        // in an info window.
-		
-        markers[i].placeResult = results[i];
- //       google.maps.event.addListener(markers[i], 'click', showInfoWindow);
-//        setTimeout(dropMarker(i), i * 100);
-//        addResult(results[i], i);
-      } // End for loop
-//	  console.log('sending markers to viewModel :' + markers);
+      } //End if maps ok
+
  var markersToViewModel = ko.utils.arrayMap(markers, function(item) {
     return new point(item.name, item.pos, item.icon);
   });
 	 viewModel.points(markersToViewModel); // send new array of points to viewModel from Google Places new location
-    }
+	}
 });
 }
+
+*/
 
 function onPlaceChanged() {
   'use strict';
@@ -252,13 +242,13 @@ function onPlaceChanged() {
   if (place.geometry) {
     map.panTo(place.geometry.location);
     map.setZoom(11);
-    search();
+//    search();
 	loadFourSquareData(place.geometry.location, map);  // Load markers using the Foursquare API
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a city';
   }
 
-  var layer = new google.maps.FusionTablesLayer({
+  var layer = new google.maps.FusionTablesLayer({//This is a way easier way to put markers on the map and IS an API!
 	query: {
 	  select: '\'Geocodable address\'',
 	  from: '1LvP5-t6UEtcj_KCBlIbi1Hvs2H8MY-PQfikWfuFC' // key for fusion table
@@ -315,18 +305,21 @@ https://api.foursquare.com/v2/venues/search
 				
 				venue[i] = result.response.venues[i];
 				
-				
+							
 				
 				if (venue[i].location.address === undefined) {
 					venue[i].location.address = "No street address available";
 				}
 				
-				if (venue[i].location.city === undefined) {
+				if (venue[i].location.city === undefined) { 
 					venue[i].location.city = "";
 				}
 				if (venue[i].location.state === undefined) {
 					venue[i].location.state = "";
 				}
+				
+				venue[i].pos = new google.maps.LatLng(venue[i].location.lat, venue[i].location.lng); // need lat/long together
+				venue[i].content = createInfoWindowContent(venue[i]);
 				
 				// this is how the JSON response is set up. you need to construct like this to get the complete image url address
 			    //var imgURL = results.response.venue[i].photos.groups[0].items[0].prefix + 'width200' + results.response.venue[i].photos.groups[0].items[0].suffix
@@ -339,6 +332,7 @@ https://api.foursquare.com/v2/venues/search
 				zip: venue[i].location.postalCode,
 				lat: venue[i].location.lat,
 				lng: venue[i].location.lng,
+				pos: new google.maps.LatLng(venue[i].location.lat, venue[i].location.lng),
 				};
 				var foursquareicon = 'img/map-pin-4-square-34x22.png';
 				var latLng = new google.maps.LatLng(foursquarePlace.lat,foursquarePlace.lng);
@@ -350,22 +344,13 @@ https://api.foursquare.com/v2/venues/search
 					icon: 'img/map-pin-4-square-34x22.png'
 			 //     img: imgURL
 				});
-				var foursquareContent = createInfoWindowContent(venue[i]);
-				
-				attachInfoWindow(foursquareMarker, foursquareContent);
-				
-   
 			}  //  end for loop 
-			console.log('foursqaure venue: ' + venue);
-			console.log('foursqaure venue.name: ' + venue.name);
-			console.log('foursqaure venue.pos: ' + venue.pos);
-			console.log('foursqaure venue.icon: ' + venue.icon);
-			 var markersToViewModel = ko.utils.arrayMap(venue, function(item) {
-				 console.log('foursqaure venue: ' + venue);
-				return new point(item.name, item.pos, foursquareicon);
+			
+			 var FourSquareMarkersToViewModel = ko.utils.arrayMap(venue, function(item) { // prepare array to send to viewModel
+				return new point(item.name, item.pos, foursquareicon, item.content);
 				
 			 });
-			 viewModel.points(markersToViewModel); // send new array of points to viewModel from Foursquare new location
+			 viewModel.points(FourSquareMarkersToViewModel); // send new array of points to viewModel from Foursquare new location
 		 
 		  }).error(function() { alert("Yikes, Foursquare API returned an error on that request. Sorry, there will be no Foursquare data for you:("); })
 			.complete(function() { console.log("foursquare request complete"); });  // All is well
@@ -414,6 +399,14 @@ function setAutocompleteCountry() {
   clearMarkers();
 }
 
+function toggleBounce() {
+	if (marker.getAnimation() !== null) {
+	  marker.setAnimation(null);
+	} else {
+	  marker.setAnimation(google.maps.Animation.BOUNCE);
+	}
+  } 
+
 
 
 function clearMarkers() {
@@ -424,6 +417,7 @@ function clearMarkers() {
   }
   markers = [];
 }
+
 
 
 viewModel.points(mappedArray);
