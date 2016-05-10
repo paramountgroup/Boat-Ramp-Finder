@@ -12,9 +12,11 @@
        
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
     
-     <!-- Load Google Maps API    -->
+         <!-- Load Google Maps API    -->
     
-	<script sync src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
+	<script async src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
+    
+    
           
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -85,8 +87,9 @@
                       </table>
     
                       <table id="controls">
+                      	
                         <select id="country">
-                          <option value="all">All</option>
+<!--                      <option value="all">All</option>
                           <option value="au">Australia</option>
                           <option value="br">Brazil</option>
                           <option value="ca">Canada</option>
@@ -97,9 +100,9 @@
                           <option value="it">Italy</option>
                           <option value="za">South Africa</option>
                           <option value="es">Spain</option>
-                          <option value="pt">Portugal</option>
+                          <option value="pt">Portugal</option> -->
                           <option value="us" selected>U.S.A.</option>
-                          <option value="uk">United Kingdom</option>
+   <!--                   <option value="uk">United Kingdom</option> -->
                         </select>
                       </table>
             </div><!-- End city and country -->
@@ -340,7 +343,9 @@
     <script src="js/smile.js"></script>
    
     <!-- javascript file -->
-    <script src="js/app.js"></script>
+    <script async defer src="js/app.js"></script>
+    
+
  
 
 </body>

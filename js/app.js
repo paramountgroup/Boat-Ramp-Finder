@@ -1,11 +1,11 @@
 
 
 var map;
-var venue = []
+var venue = [];
 var autocomplete;
 var places;
 var markers = [];
-var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
+//var MARKER_PATH = 'https://maps.gstatic.com/intl/en_us/mapfiles/marker_green';
 //var infowindow = new google.maps.InfoWindow();
 var mappedArray;
 var countries = {
@@ -68,7 +68,7 @@ var countries = {
   var mapRequestTimeout = setTimeout(function() {
     $('#map').html(' Oh My, Trouble loading Google Maps! Please refresh your browser and try again.');
   }, 8000);
-
+  
 
 (function initMap() {
  'use strict';
@@ -87,7 +87,7 @@ var countries = {
 // animation and no animation.
 
   var image = 'img/logo-with-blue-outline-circle-transp-30x29.png';
-  var marker = new google.maps.Marker({
+  var pgMarker = new google.maps.Marker({
     position: myLatLng,
     map: map,
 	icon: image,
@@ -96,7 +96,7 @@ var countries = {
   });
 
 
-  marker.addListener('click', toggleBounce);  // click listener to stop or start bouncing logo
+  pgMarker.addListener('click', toggleBounce);  // click listener to stop or start bouncing logo
 
   
   
@@ -117,7 +117,7 @@ var countries = {
 
   // Add a DOM event listener to react when the user selects a country.
  
-  document.getElementById('country').addEventListener('change', setAutocompleteCountry); 
+//  document.getElementById('country').addEventListener('change', setAutocompleteCountry); commented per Udacity project requirement
 	  
 
  
@@ -133,13 +133,14 @@ var countries = {
 // *****************  END INIT MAP   ****************  //
 
 // ***************  NEW VIEW MODEL  ****************  //
-var infowindow = new google.maps.InfoWindow();
+//var infowindow = new google.maps.InfoWindow();
 var viewModel = {
   points: ko.observableArray([]),
   filterLetter: ko.observable(""),
   showInfoWindow: function(point) {
     infowindow.setContent(point.marker.info.content);
     infowindow.open(map, point.marker);
+    point.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
   }
 };
 
@@ -241,7 +242,7 @@ function onPlaceChanged() {
   var place = autocomplete.getPlace();
   if (place.geometry) {
     map.panTo(place.geometry.location);
-    map.setZoom(11);
+    map.setZoom(9);
 //    search();
 	loadFourSquareData(place.geometry.location, map);  // Load markers using the Foursquare API
   } else {
