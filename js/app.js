@@ -133,7 +133,7 @@ var countries = {
 // *****************  END INIT MAP   ****************  //
 
 // ***************  NEW VIEW MODEL  ****************  //
-//var infowindow = new google.maps.InfoWindow();
+var infowindow = new google.maps.InfoWindow();
 var viewModel = {
   points: ko.observableArray([]),
   filterLetter: ko.observable(""),
