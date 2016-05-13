@@ -193,8 +193,7 @@ function point(name, latLong, pinicon, infoContent) {
     var marker_map = this.getMap();
     this.info.open(marker_map, this);
     //Change the marker icon when clicked
-    console.log('this: ' + this);
-//    this.setIcon(toggleMarkerColor(this));
+
     if (this.icon === undefined) {
           this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); 
           return;
@@ -427,7 +426,6 @@ function toggleBounce() {
   } 
 
 function toggleMarkerColor(incomingMarker) {
-    console.log('incomingMarker: ' + incomingMarker);
    if (incomingMarker.marker.icon === undefined) {
        incomingMarker.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
        return;
