@@ -9,6 +9,6 @@ js.setAttribute('type', 'text/javascript');
 js.src = 'js/app.js';
 document.body.appendChild(js);
 }
-console.log('before setTimeout');
+
 setTimeout(addAppJS(), 8000);
-console.log('after setTimeout');
+
