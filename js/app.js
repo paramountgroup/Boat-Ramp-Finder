@@ -148,6 +148,7 @@ var viewModel = {
 
 //ko.utils.arrayFilter - filter the items using the filter text
 viewModel.filteredPoints = ko.dependentObservable(function() {
+  //  viewModel.filteredPoints = ([]);
   var filter = this.filterLetter().toLowerCase();
   var self = this;
   if (!filter) {
@@ -317,7 +318,7 @@ https://api.foursquare.com/v2/venues/search
 				return alert('JSON Request to Foursquare API did not return success');  // Error check response from foursquare
 			}  // if status Ok then continue placing pins
 			
-			
+			venue = []; // start with clear array
 			// Transform each venue result into a marker on the map.
 			for (var i = 0; i < result.response.venues.length; i++) {
 				
