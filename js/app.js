@@ -1,6 +1,7 @@
 
 
 var map;
+var pgMarker;
 var venue = [];
 var autocomplete;
 var places;
@@ -67,7 +68,7 @@ var countries = {
  
   var mapRequestTimeout = setTimeout(function() {
     $('#map').html(' Oh My, Trouble loading Google Maps! Please refresh your browser and try again.');
-  }, 8000);
+  }, 5000);
   
 
 (function initMap() {
@@ -87,7 +88,7 @@ var countries = {
 // animation and no animation.
 
   var image = 'img/logo-with-blue-outline-circle-transp-30x29.png';
-  var pgMarker = new google.maps.Marker({
+  pgMarker = new google.maps.Marker({
     position: myLatLng,
     map: map,
 	icon: image,
@@ -140,7 +141,8 @@ var viewModel = {
   showInfoWindow: function(point) {
     infowindow.setContent(point.marker.info.content);
     infowindow.open(map, point.marker);
-    point.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+    toggleMarkerColor(point);
+ //   point.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
   }
 };
 
@@ -187,11 +189,27 @@ function point(name, latLong, pinicon, infoContent) {
 	  content: infoContent});
 	 
   
-  google.maps.event.addListener(this.marker, 'click', function() { 
-  var marker_map = this.getMap();
+  google.maps.event.addListener(this.marker, 'click', function() {    
+    var marker_map = this.getMap();
     this.info.open(marker_map, this);
     //Change the marker icon when clicked
-    this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+    console.log('this: ' + this);
+//    this.setIcon(toggleMarkerColor(this));
+    if (this.icon === undefined) {
+          this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); 
+          return;
+   }
+   if (this.icon === 'http://maps.google.com/mapfiles/ms/icons/green-dot.png') {
+       this.setIcon('img/map-pin-4-square-34x22.png');
+       return;
+   }
+   if (this.icon === 'img/map-pin-4-square-34x22.png') {
+       this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+       return;
+   }
+    
+    console.log('this.icon: ' + this.icon);
+    
   }); 
 
 }
@@ -401,13 +419,28 @@ function setAutocompleteCountry() {
 }
 
 function toggleBounce() {
-	if (marker.getAnimation() !== null) {
-	  marker.setAnimation(null);
+	if (pgMarker.getAnimation() !== null) {
+	  pgMarker.setAnimation(null);
 	} else {
-	  marker.setAnimation(google.maps.Animation.BOUNCE);
+	  pgMarker.setAnimation(google.maps.Animation.BOUNCE);
 	}
   } 
 
+function toggleMarkerColor(incomingMarker) {
+    console.log('incomingMarker: ' + incomingMarker);
+   if (incomingMarker.marker.icon === undefined) {
+       incomingMarker.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+       return;
+   }
+   if (incomingMarker.marker.icon === 'http://maps.google.com/mapfiles/ms/icons/green-dot.png') {
+       incomingMarker.marker.setIcon('img/map-pin-4-square-34x22.png');
+       return;
+   }
+   if (incomingMarker.marker.icon === 'img/map-pin-4-square-34x22.png') {
+       incomingMarker.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+       return;
+   }
+}
 
 
 function clearMarkers() {

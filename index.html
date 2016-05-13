@@ -11,10 +11,19 @@
     <meta name="author" content="The Paramount Group.us">
        
     <title>Boat Ramp Finder - Udacity Front End Web Developer Project 5</title>
+     <!-- gracefully handle error if any loading google map    -->
+   
+    <script>
+        function mapDidNotLoad() {
+            alert('Error loading map.');
+        }
+    </script>
     
          <!-- Load Google Maps API    -->
     
-	<script async src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
+	<script async src="https://maps.googleapis.com/maps/api/js?&libraries=places" onerror="mapDidNotLoad()"></script>
+    
+    
     
     
           
@@ -130,7 +139,7 @@
               </div> <!-- end col-md-3 -->
       
      </div> <!-- End Row -->
-          
+  <!--        
     <div id="definepins" class="row">
         <div class="col-md-4">
           <img src="img/map-pin-green.png" class="img-responsive" alt="map icon green">
@@ -145,13 +154,13 @@
           <img src="img/map-pin-foursquare.png" class="img-responsive" alt=" map icon foursquare">
           <div>Four Square Pins</div>
         </div>
-     </div><!-- End Row   -->          
+     </div><!-- End Row             
    </section> <!-- End Container for Map Section-->
 
 
     <!-- ********************   Resources Grid Section ****************************  -->
     
-    
+<!--    
     <section id="portfolio">
         <div class="container">
             <div class="row">
@@ -218,7 +227,7 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section --
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -230,7 +239,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
                     <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. --
                     <form name="sentMessage" id="contactForm" novalidate>
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
@@ -337,17 +346,17 @@
     <script src="js/freelancer.js"></script>
     
     <!-- knoockout file  -->
-    <script type="text/javascript" src="js/knockout-3.4.0.js"></script>
+    <script src="js/knockout-3.4.0.js"></script>
     
       <!-- javascript file -->
     <script src="js/smile.js"></script>
    
     <!-- javascript file -->
-    <script async defer src="js/app.js"></script>
+    <script src="js/udacitydelay.js"></script>
     
 
  
 
-</body>
+</section></body>
 
 </html>
