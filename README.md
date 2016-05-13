@@ -1,13 +1,20 @@
 "Boat Ramp Finder" - Udacity Front End Developer Course Project-5
 --------
 
-
-Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queiries Foursquare API for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/project-5 It's mobile friendly. Users are able to update the boat ramp database by filling out the website form and submitting. Upon approval new locations will be added to the Fusion Tables database. Code on the website does not need to be changed to add new locations. Changes are made in the Fusion Table database. 
+Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queiries use Foursquare API for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/project-5 It's mobile friendly. 
 ***
 Instructions
 -------
+To run:
 
-* Enter City you would like to find a boat ramp
+Download or fork the application from: https://github.com/paramountgroup/project-5
+Select index.html to start the app
+
+To use:
+
+Use filter box to filter list items and map markers
+Select a list item or map marker to open an info window describing the marker.
+* Enter City you would like to find a boat ramp (i.e. New York)
 * Click on Marker for information
 * Click on handy links to make your boating trip safer
 
