@@ -10,5 +10,5 @@ js.src = 'js/app.js';
 document.body.appendChild(js);
 }
 
-setTimeout(addAppJS(), 8000);
+setTimeout(addAppJS, 4000);
 

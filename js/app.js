@@ -125,7 +125,7 @@ var countries = {
 
 
   mappedArray = ko.utils.arrayMap(smile, function(item) { // preloads an array of points from the smile.js file 
-    return new point(item.name, item.pos, item.icon, item.content); // icon is not defined uses default google maps icon.
+    return new Point(item.name, item.pos, item.icon, item.content); // icon is not defined uses default google maps icon.
   });
   
 
@@ -159,7 +159,8 @@ viewModel.filteredPoints = ko.dependentObservable(function() {
     });
   } else {
     return ko.utils.arrayFilter(this.points(), function(item) {
-      if (item.name.toLowerCase().indexOf(filter) === 0) {
+       if (item.name.toLowerCase().indexOf(filter) === 0) {
+    // if (item.name.toLowerCase().indexOf(filter) >= 0) { // does not work
         return true
       } else {
         item.marker.setVisible(false);
@@ -174,7 +175,7 @@ viewModel.filteredPoints = ko.dependentObservable(function() {
 
 
 
-function point(name, latLong, pinicon, infoContent) {
+function Point(name, latLong, pinicon, infoContent) {
 
   this.name = name;
   this.marker = new google.maps.Marker({
@@ -246,7 +247,7 @@ places.nearbySearch(search, function(results, status) {
       } //End if maps ok
 
  var markersToViewModel = ko.utils.arrayMap(markers, function(item) {
-    return new point(item.name, item.pos, item.icon);
+    return new Point(item.name, item.pos, item.icon);
   });
 	 viewModel.points(markersToViewModel); // send new array of points to viewModel from Google Places new location
 	}
@@ -366,7 +367,7 @@ https://api.foursquare.com/v2/venues/search
 			}  //  end for loop 
 			
 			 var FourSquareMarkersToViewModel = ko.utils.arrayMap(venue, function(item) { // prepare array to send to viewModel
-				return new point(item.name, item.pos, foursquareicon, item.content);
+				return new Point(item.name, item.pos, foursquareicon, item.content);
 				
 			 });
 			 viewModel.points(FourSquareMarkersToViewModel); // send new array of points to viewModel from Foursquare new location
