@@ -15,17 +15,13 @@
    
     <script>
         function mapDidNotLoad() {
-            alert('Error loading map.');
+            alert('Error loading map. Try refreshing your browser');
         }
     </script>
     
          <!-- Load Google Maps API    -->
     
 	<script async src="https://maps.googleapis.com/maps/api/js?&libraries=places" onerror="mapDidNotLoad()"></script>
-    
-    
-    
-    
           
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -92,12 +88,12 @@
       <div class="row">
           <div id="cityandcountry" class="col-sm-12 col-lg-12 col-md-12">
                       <table id="locationField">
-                        <tr><td><input id="autocomplete" placeholder="Enter your city" type="text" /></td></tr>
+                        <span><input id="autocomplete" placeholder="Enter your city" type="text" /></span>
                       </table>
     
                       <table id="controls">
                       	
-                        <td><select id="country">
+                        <select id="country">
 <!--                      <option value="all">All</option>
                           <option value="au">Australia</option>
                           <option value="br">Brazil</option>
@@ -112,7 +108,7 @@
                           <option value="pt">Portugal</option> -->
                           <option value="us" selected>U.S.A.</option>
    <!--                   <option value="uk">United Kingdom</option> -->
-                        </select></td>
+                        </select>
                       </table>
             </div><!-- End city and country -->
        </div>  <!-- End Row -->

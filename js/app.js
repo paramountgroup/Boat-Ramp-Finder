@@ -64,11 +64,11 @@ var countries = {
   }
 };
 
-//Error handling if Google Maps fails to load within 8 seconds error message displayed. 
+//Error handling if Google Maps fails to load within 2 seconds error message displayed. 
  
   var mapRequestTimeout = setTimeout(function() {
     $('#map').html(' Oh My, Trouble loading Google Maps! Please refresh your browser and try again.');
-  }, 5000);
+  }, 2000);
   
 
 (function initMap() {
@@ -76,6 +76,13 @@ var countries = {
  var countryRestrict = {'country': 'us'};
  var myLatLng = {lat: 37.42, lng: -122.08}; // googleplex
 //  var myLatLng = {lat: 28.182882, lng: -80.592502};
+
+// double check to make sure google maps loaded if not send error 
+ if (typeof google === 'object' && typeof google.maps === 'object') {     
+  //  return;
+    } else {
+        mapDidNotLoad();
+    }
 
   map = new google.maps.Map(document.getElementById('map'), {
   zoom: 12,
@@ -137,7 +144,7 @@ var countries = {
 var infowindow = new google.maps.InfoWindow();
 var viewModel = {
   points: ko.observableArray([]),
-  filterLetter: ko.observable(""),
+  filterLetter: ko.observable(''),
   showInfoWindow: function(point) {
     infowindow.setContent(point.marker.info.content);
     infowindow.open(map, point.marker);
@@ -160,12 +167,12 @@ viewModel.filteredPoints = ko.dependentObservable(function() {
   } else {
     return ko.utils.arrayFilter(this.points(), function(item) {
        if (item.name.toLowerCase().indexOf(filter) === 0) {
-    // if (item.name.toLowerCase().indexOf(filter) >= 0) { // does not work
-        return true
+     //console.log('item.marker: ' + item.marker);
+        return true;
       } else {
         item.marker.setVisible(false);
-        return false
-      };
+        return false;
+      }
     });
   }
 }, viewModel);
@@ -196,20 +203,18 @@ function Point(name, latLong, pinicon, infoContent) {
     this.info.open(marker_map, this);
     //Change the marker icon when clicked
 
-    if (this.icon === undefined) {
+     if (this.icon === undefined) {
           this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); 
           return;
-   }
-   if (this.icon === 'http://maps.google.com/mapfiles/ms/icons/green-dot.png') {
-       this.setIcon('img/map-pin-4-square-34x22.png');
-       return;
-   }
-   if (this.icon === 'img/map-pin-4-square-34x22.png') {
-       this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-       return;
-   }
-    
-    console.log('this.icon: ' + this.icon);
+     }
+     if (this.icon === 'http://maps.google.com/mapfiles/ms/icons/green-dot.png') {
+         this.setIcon('img/map-pin-4-square-34x22.png');
+         return;
+     }
+     if (this.icon === 'img/map-pin-4-square-34x22.png') {
+         this.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+         return;
+     }
     
   }); 
 
@@ -340,30 +345,9 @@ https://api.foursquare.com/v2/venues/search
 				
 				venue[i].pos = new google.maps.LatLng(venue[i].location.lat, venue[i].location.lng); // need lat/long together
 				venue[i].content = createInfoWindowContent(venue[i]);
+                var foursquareicon = 'img/map-pin-4-square-34x22.png';
 				
-				// this is how the JSON response is set up. you need to construct like this to get the complete image url address
-			    //var imgURL = results.response.venue[i].photos.groups[0].items[0].prefix + 'width200' + results.response.venue[i].photos.groups[0].items[0].suffix
-			    // an object to store the relevant information that returned from JSON
-				var foursquarePlace = {
-				name: venue[i].name,
-				street: venue[i].location.address,
-				city: venue[i].location.city,
-				state: venue[i].location.state,
-				zip: venue[i].location.postalCode,
-				lat: venue[i].location.lat,
-				lng: venue[i].location.lng,
-				pos: new google.maps.LatLng(venue[i].location.lat, venue[i].location.lng),
-				};
-				var foursquareicon = 'img/map-pin-4-square-34x22.png';
-				var latLng = new google.maps.LatLng(foursquarePlace.lat,foursquarePlace.lng);
-				var foursquareMarker = new google.maps.Marker({
-					position: latLng,
-					map: map,
-					title: foursquarePlace.name,
-					animation: google.maps.Animation.DROP,
-					icon: 'img/map-pin-4-square-34x22.png'
-			 //     img: imgURL
-				});
+				
 			}  //  end for loop 
 			
 			 var FourSquareMarkersToViewModel = ko.utils.arrayMap(venue, function(item) { // prepare array to send to viewModel
@@ -384,7 +368,7 @@ function createInfoWindowContent(venue) {
 	var venueURL = 'http://foursquare.com/v/' + venue.id, 
 		infoWindowHTML = '<h6><a href="' + venueURL + '" target="_blank">' + venue.name  + '</a></h6>';
 		infoWindowHTML += '<h7 class="foursquareinfo">Address: <span>' + venue.location.address + ', ' + venue.location.city + ', ' + venue.location.state + '</span></h7>';
-		infoWindowHTML += '<h5><img src="img/foursquare-logo.png" alt="Foursquare logo"></h5>';
+		infoWindowHTML += '<h5><img src="img/foursquare-logo.png" alt="Foursquare logo">Foursquare</h5>';
 	   
 	return infoWindowHTML;
 }
@@ -453,6 +437,6 @@ function clearMarkers() {
 }
 
 
-
+//console.log('mappedArray: ' + mappedArray[0].icon);
 viewModel.points(mappedArray);
 ko.applyBindings(viewModel); // activate knockout
