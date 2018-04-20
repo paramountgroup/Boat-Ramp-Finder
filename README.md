@@ -1,7 +1,7 @@
 "Boat Ramp Finder" - Udacity Front End Developer Course Project-5
 --------
 
-Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queries use Foursquare API for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/project-5 It's mobile friendly. 
+Boat Ramp Finder will help guide you to the nearest splash point for your next boating adventure. The website queries use Foursquare API for known boat ramp locations and adds a few of its own that are not on the map. The helpful resources will help make sure you have a safe boating adventure. https://paramountgroup.github.io/Boat-Ramp-Finder/ It's mobile friendly. 
 ***
 Instructions
 -------
